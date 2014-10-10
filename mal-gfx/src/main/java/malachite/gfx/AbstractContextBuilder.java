@@ -7,11 +7,13 @@ import org.lwjgl.opengl.GL11;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-abstract class ContextBuilder {
-  private static final Logger logger = LoggerFactory.getLogger(ContextBuilder.class);
+public abstract class AbstractContextBuilder {
+  private static final Logger logger = LoggerFactory.getLogger(AbstractContextBuilder.class);
   
   protected abstract void    createDisplay() throws LWJGLException;
   protected abstract Context createContext(int fps);
+  
+  protected AbstractContextBuilder() { }
   
   final Context create(String title, boolean resizable, boolean blending, float[] clearColour, int w, int h, int fps) throws LWJGLException {
     Display.setTitle(title);
