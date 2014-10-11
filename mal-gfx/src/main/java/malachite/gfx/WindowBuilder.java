@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.Objects;
 
 import org.lwjgl.LWJGLException;
+import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.DisplayMode;
+import org.lwjgl.opengl.GL11;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,14 +71,20 @@ public class WindowBuilder {
       throw new NullPointerException("No context builders were registered before attempting to build a context"); //$NON-NLS-1$
     }
     
+    return buildSuitableContext(ctx -> {
+      createWindow(ctx);
+      return ctx.create(_blending, _clear, _w, _h, _fps);
+    });
+  }
+  
+  private Context buildSuitableContext(ContextBuilderIteration r) {
     for(Class<? extends AbstractContextBuilder> c : _contexts) {
       try {
-        AbstractContextBuilder context = c.newInstance();
-        
         try {
-          return context.create(_title, _resizable, _blending, _clear, _w, _h, _fps);
+          AbstractContextBuilder ctx = c.newInstance();
+          return r.build(ctx);
         } catch(LWJGLException e) {
-          logger.error("Couldn't instanciate " + context, e);
+          logger.error("Couldn't instanciate " + c, e);
         }
       } catch(InstantiationException | IllegalAccessException e) {
         logger.error("Error creating context", e); //$NON-NLS-1$
@@ -84,5 +93,22 @@ public class WindowBuilder {
     }
     
     return null;
+  }
+  
+  private void createWindow(AbstractContextBuilder ctx) throws LWJGLException {
+    Display.setTitle(_title);
+    Display.setResizable(_resizable);
+    Display.setInitialBackground(_clear[0], _clear[1], _clear[2]);
+    Display.setDisplayMode(new DisplayMode(_w, _h));
+    Display.create(ctx.createPixelFormat(), ctx.createContextAttribs());
+    
+    logger.info("Creating context {}", Display.getTitle()); //$NON-NLS-1$
+    logger.info("Display adapter: {}", Display.getAdapter()); //$NON-NLS-1$
+    logger.info("Driver version:  {}", Display.getVersion()); //$NON-NLS-1$
+    logger.info("OpenGL version:  {}", GL11.glGetString(GL11.GL_VERSION)); //$NON-NLS-1$
+  }
+  
+  private interface ContextBuilderIteration {
+    public Context build(AbstractContextBuilder ctx) throws LWJGLException;
   }
 }
