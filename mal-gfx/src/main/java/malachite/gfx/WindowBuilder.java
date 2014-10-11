@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 
 public class WindowBuilder {
   public static void main(String[] args) {
-    Context ctx = new WindowBuilder()
+    Window window = new WindowBuilder()
       .registerContext(malachite.gfx.gl21.ContextBuilder.class)
       .setTitle("Test").build();
   }
@@ -66,15 +66,20 @@ public class WindowBuilder {
     return this;
   }
   
-  public Context build() {
+  public Window build() {
     if(_contexts.isEmpty()) {
       throw new NullPointerException("No context builders were registered before attempting to build a context"); //$NON-NLS-1$
     }
     
-    return buildSuitableContext(ctx -> {
-      createWindow(ctx);
-      return ctx.create(_blending, _clear, _w, _h, _fps);
+    Context ctx = buildSuitableContext(builder -> {
+      initDisplay();
+      createDisplay(builder);
+      return builder.create(_blending, _clear, _w, _h, _fps);
     });
+    
+    logContextInfo();
+    
+    return createWindowFromContext(ctx);
   }
   
   private Context buildSuitableContext(ContextBuilderIteration r) {
@@ -95,13 +100,22 @@ public class WindowBuilder {
     return null;
   }
   
-  private void createWindow(AbstractContextBuilder ctx) throws LWJGLException {
+  private void initDisplay() throws LWJGLException {
     Display.setTitle(_title);
     Display.setResizable(_resizable);
     Display.setInitialBackground(_clear[0], _clear[1], _clear[2]);
     Display.setDisplayMode(new DisplayMode(_w, _h));
-    Display.create(ctx.createPixelFormat(), ctx.createContextAttribs());
-    
+  }
+  
+  private void createDisplay(AbstractContextBuilder builder) throws LWJGLException {
+    Display.create(builder.createPixelFormat(), builder.createContextAttribs());
+  }
+  
+  private Window createWindowFromContext(Context ctx) {
+    return new Window(ctx);
+  }
+  
+  private void logContextInfo() {
     logger.info("Creating context {}", Display.getTitle()); //$NON-NLS-1$
     logger.info("Display adapter: {}", Display.getAdapter()); //$NON-NLS-1$
     logger.info("Driver version:  {}", Display.getVersion()); //$NON-NLS-1$
