@@ -5,7 +5,7 @@ import org.lwjgl.opengl.ContextAttribs;
 import org.lwjgl.opengl.PixelFormat;
 
 import malachite.gfx.AbstractContextBuilder;
-import malachite.gfx.Context;
+import malachite.gfx.AbstractContext;
 
 public class ContextBuilder extends AbstractContextBuilder {
   @Override protected ContextAttribs createContextAttribs() throws LWJGLException {
@@ -16,7 +16,7 @@ public class ContextBuilder extends AbstractContextBuilder {
     return new PixelFormat();
   }
   
-  @Override protected Context createContext(float[] clearColour, int w, int h, int fps) {
+  @Override protected AbstractContext createContext(float[] clearColour, int w, int h, int fps) {
     return null;
   }
 }

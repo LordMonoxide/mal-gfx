@@ -8,11 +8,11 @@ import org.lwjgl.opengl.PixelFormat;
 public abstract class AbstractContextBuilder {
   protected abstract ContextAttribs createContextAttribs() throws LWJGLException;
   protected abstract PixelFormat    createPixelFormat();
-  protected abstract Context        createContext(float[] clearColour, int w, int h, int fps);
+  protected abstract AbstractContext        createContext(float[] clearColour, int w, int h, int fps);
   
   protected AbstractContextBuilder() { }
   
-  final Context create(boolean blending, float[] clearColour, int w, int h, int fps) throws LWJGLException {
+  final AbstractContext create(boolean blending, float[] clearColour, int w, int h, int fps) throws LWJGLException {
     if(blending) {
       GL11.glEnable(GL11.GL_BLEND);
       GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);

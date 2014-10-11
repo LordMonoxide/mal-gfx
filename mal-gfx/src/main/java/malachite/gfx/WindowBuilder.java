@@ -71,7 +71,7 @@ public class WindowBuilder {
       throw new NullPointerException("No context builders were registered before attempting to build a context"); //$NON-NLS-1$
     }
     
-    Context ctx = buildSuitableContext(builder -> {
+    AbstractContext ctx = buildSuitableContext(builder -> {
       initDisplay();
       createDisplay(builder);
       return builder.create(_blending, _clear, _w, _h, _fps);
@@ -82,7 +82,7 @@ public class WindowBuilder {
     return createWindowFromContext(ctx);
   }
   
-  private Context buildSuitableContext(ContextBuilderIteration r) {
+  private AbstractContext buildSuitableContext(ContextBuilderIteration r) {
     for(Class<? extends AbstractContextBuilder> c : _contexts) {
       try {
         try {
@@ -111,7 +111,7 @@ public class WindowBuilder {
     Display.create(builder.createPixelFormat(), builder.createContextAttribs());
   }
   
-  private Window createWindowFromContext(Context ctx) {
+  private Window createWindowFromContext(AbstractContext ctx) {
     return new Window(ctx);
   }
   
@@ -123,6 +123,6 @@ public class WindowBuilder {
   }
   
   private interface ContextBuilderIteration {
-    public Context build(AbstractContextBuilder ctx) throws LWJGLException;
+    public AbstractContext build(AbstractContextBuilder ctx) throws LWJGLException;
   }
 }
