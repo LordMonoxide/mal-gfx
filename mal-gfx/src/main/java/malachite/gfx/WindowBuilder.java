@@ -11,13 +11,13 @@ import org.slf4j.LoggerFactory;
 public class WindowBuilder {
   public static void main(String[] args) {
     Context ctx = new WindowBuilder()
-      .registerContext(context)
+      .registerContext(malachite.gfx.gl21.ContextBuilder.class)
       .setTitle("Test").build();
   }
   
   private static final Logger logger = LoggerFactory.getLogger(WindowBuilder.class);
   
-  private final List<Class<? extends ContextBuilder>> _contexts = new ArrayList<>();
+  private final List<Class<? extends AbstractContextBuilder>> _contexts = new ArrayList<>();
   
   private String _title;
   private boolean _resizable = true;
@@ -26,7 +26,7 @@ public class WindowBuilder {
   private final float[] _clear = new float[] {0, 0, 0};
   private int _fps = 60;
   
-  public WindowBuilder registerContext(Class<? extends ContextBuilder> context) {
+  public WindowBuilder registerContext(Class<? extends AbstractContextBuilder> context) {
     _contexts.add(Objects.requireNonNull(context));
     return this;
   }
@@ -68,9 +68,9 @@ public class WindowBuilder {
       throw new NullPointerException("No context builders were registered before attempting to build a context"); //$NON-NLS-1$
     }
     
-    for(Class<? extends ContextBuilder> c : _contexts) {
+    for(Class<? extends AbstractContextBuilder> c : _contexts) {
       try {
-        ContextBuilder context = c.newInstance();
+        AbstractContextBuilder context = c.newInstance();
         
         try {
           return context.create(_title, _resizable, _blending, _clear, _w, _h, _fps);
