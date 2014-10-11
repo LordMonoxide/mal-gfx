@@ -5,6 +5,7 @@ public class Window {
   
   Window(AbstractContext ctx) {
     _ctx = ctx;
+    _ctx.run();
   }
   
   public void close() {
