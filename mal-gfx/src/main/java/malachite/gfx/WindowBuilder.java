@@ -16,6 +16,8 @@ public class WindowBuilder {
     Window window = new WindowBuilder()
       .registerContext(malachite.gfx.gl21.ContextBuilder.class)
       .setTitle("Test").build();
+    
+    window.close();
   }
   
   private static final Logger logger = LoggerFactory.getLogger(WindowBuilder.class);

@@ -16,7 +16,7 @@ public class ContextBuilder extends AbstractContextBuilder {
     return new PixelFormat();
   }
   
-  @Override protected AbstractContext createContext(float[] clearColour, int w, int h, int fps) {
-    return null;
+  @Override protected AbstractContext createContext(int fps) {
+    return new Context(fps);
   }
 }

@@ -6,9 +6,9 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.PixelFormat;
 
 public abstract class AbstractContextBuilder {
-  protected abstract ContextAttribs createContextAttribs() throws LWJGLException;
-  protected abstract PixelFormat    createPixelFormat();
-  protected abstract AbstractContext        createContext(float[] clearColour, int w, int h, int fps);
+  protected abstract ContextAttribs  createContextAttribs() throws LWJGLException;
+  protected abstract PixelFormat     createPixelFormat();
+  protected abstract AbstractContext createContext(int fps);
   
   protected AbstractContextBuilder() { }
   
@@ -18,6 +18,6 @@ public abstract class AbstractContextBuilder {
       GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
     }
     
-    return createContext(clearColour, w, h, fps);
+    return createContext(fps);
   }
 }

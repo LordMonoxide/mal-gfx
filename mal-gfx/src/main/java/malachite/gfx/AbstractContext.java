@@ -5,9 +5,6 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 
 public abstract class AbstractContext {
-  private float[] _clearColour;
-  private int _w, _h;
-  
   private boolean _running;
   
   private int    _fpsLimit;
@@ -17,12 +14,7 @@ public abstract class AbstractContext {
   
   private final double[] _spf = new double[10];
   
-  protected AbstractContext(float[] clearColour, int w, int h, int fps) {
-    _clearColour = clearColour;
-    
-    _w = w;
-    _h = h;
-    
+  protected AbstractContext(int fps) {
     _fpsLimit = fps;
   }
   
