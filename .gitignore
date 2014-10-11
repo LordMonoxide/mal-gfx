@@ -1,6 +1,7 @@
 # Eclipse stuff #
 .metadata/
 .recommenders/
+target/
 
 *.class
 
