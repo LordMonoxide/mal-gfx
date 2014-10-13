@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 public class WindowBuilder {
   public static void main(String[] args) {
     Window window = new WindowBuilder()
+      .registerContext(malachite.gfx.gl32.ContextBuilder.class)
       .registerContext(malachite.gfx.gl21.ContextBuilder.class)
       .setTitle("Test").build();
   }
