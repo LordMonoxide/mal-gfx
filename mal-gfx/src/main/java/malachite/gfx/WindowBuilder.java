@@ -95,6 +95,14 @@ public class WindowBuilder {
    * @throws LWJGLException
    */
   public Window build() throws LWJGLException {
+    // Use default ContextBuilder if none was provided
+    if(_builder == null) {
+      _builder = new ContextBuilder();
+    }
+    
+    // This class will be used to instantiate OpenGL in
+    // a different thread, but still return a reference
+    // to the instance from this method
     class State {
       Window window;
       LWJGLException e;
@@ -102,43 +110,52 @@ public class WindowBuilder {
     
     State state = new State();
     
+    // Create OpenGL in a new thread
     Thread thread = new Thread(new Runnable() {
       public void run() {
-        if(_builder == null) {
-          _builder = new ContextBuilder();
-        }
-        
         try {
+          // Try to create the display
           initDisplay();
           createDisplay(_builder);
         } catch(LWJGLException e) {
+          // If it fails, dump the exception into the state object
+          // so it can be rethrown by the enclosing function and bail
           state.e = e;
+          state.notifyAll();
+          return;
         }
         
+        // Build the context itself
         Context ctx = _builder.build(_w, _h);
         
+        // Log some info about the environment
         logContextInfo();
         
+        // Create the window and wake up the other thread
         synchronized(state) {
           state.window = createWindowFromContext(ctx);
           state.notifyAll();
         }
         
+        // Run the context in this thread
         ctx.run();
       }
     });
     
+    // Start the GL thread and wait for
+    // either Window creation or an error
     synchronized(state) {
       thread.start();
       
-      while(state.window == null) {
+      while(state.window == null && state.e == null) {
         try{
           state.wait();
-        } catch(InterruptedException e) {
-        }
+        } catch(InterruptedException e) { }
       }
     }
     
+    // Rethrow the exception if we
+    // caught one in the GL thread
     if(state.e != null) {
       throw state.e;
     }
