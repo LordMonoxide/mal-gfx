@@ -33,10 +33,12 @@ public class Context {
   }
   
   private void updateSize() {
-    
+    GL11.glViewport(0, 0, Display.getWidth(), Display.getHeight());
   }
   
   void run() {
+    updateSize();
+    
     _running = true;
     
     while(_running) {
