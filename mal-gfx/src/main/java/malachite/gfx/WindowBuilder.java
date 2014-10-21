@@ -1,7 +1,5 @@
 package malachite.gfx;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 import org.lwjgl.LWJGLException;
@@ -11,94 +9,141 @@ import org.lwjgl.opengl.GL11;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * <p>Factory class for building {@link Window}s.
+ * All parameters are given sensible defaults, so you are
+ * not required to set anything other than the title.
+ * @author Corey Frenette
+ */
 public class WindowBuilder {
   public static void main(String[] args) {
-    Window window = new WindowBuilder()
-      .registerContext(malachite.gfx.gl32.ContextBuilder.class)
-      .registerContext(malachite.gfx.gl21.ContextBuilder.class)
-      .setTitle("Test").build();
+    try {
+      Window window = new WindowBuilder()
+        .withTitle("Test").build();
+    } catch(LWJGLException e) {
+      logger.error("Error while building window", e);
+    }
   }
   
   private static final Logger logger = LoggerFactory.getLogger(WindowBuilder.class);
   
-  private final List<Class<? extends AbstractContextBuilder>> _contexts = new ArrayList<>();
+  private ContextBuilder _builder;
   
   private String _title;
   private boolean _resizable = true;
-  private boolean _blending = true;
   private int _w = 1280, _h = 720;
   private final float[] _clear = new float[] {0, 0, 0};
-  private int _fps = 60;
   
-  public WindowBuilder registerContext(Class<? extends AbstractContextBuilder> context) {
-    _contexts.add(Objects.requireNonNull(context));
+  /**
+   * Sets the {@link ContextBuilder} to be used to construct the {@link Context} used by this {@link Window}.
+   * @param builder a non-null instance of the {@link ContextBuilder} class
+   * @return this
+   */
+  public WindowBuilder withContextBuilder(ContextBuilder builder) {
+    _builder = Objects.requireNonNull(builder);
     return this;
   }
   
-  public WindowBuilder setTitle(String title) {
-    _title = title;
+  /**
+   * Sets the title of the constructed {@link Window}.
+   * @param title a non-null string to be used as the title of the {@link Window}
+   * @return this
+   */
+  public WindowBuilder withTitle(String title) {
+    _title = Objects.requireNonNull(title);
     return this;
   }
   
-  public WindowBuilder setResizable(boolean resizable) {
+  /**
+   * Controls whether or not the constructed {@link Window} will be resizable.
+   * @param resizable enable/disable resizing
+   * @return this
+   */
+  public WindowBuilder withResizable(boolean resizable) {
     _resizable = resizable;
     return this;
   }
   
-  public WindowBuilder withAlphaBlending(boolean blending) {
-    _blending = blending;
-    return this;
-  }
-  
-  public WindowBuilder setSize(int w, int h) {
+  /**
+   * Sets the initial size of the constructed {@link Window}.
+   * @param w the width of the {@link Window}
+   * @param h the height of the {@link Window}
+   * @return this
+   */
+  public WindowBuilder withSize(int w, int h) {
     _w = w; _h = h;
     return this;
   }
   
-  public WindowBuilder setClearColour(float r, float g, float b) {
+  /**
+   * Sets the background colour of the constructed {@link Window}.
+   * @param r the red component
+   * @param g the green component
+   * @param b the blue component
+   * @return this
+   */
+  public WindowBuilder withBackgroundColour(float r, float g, float b) {
     _clear[0] = r;
     _clear[1] = g;
     _clear[2] = b;
     return this;
   }
   
-  public WindowBuilder setFPSLimit(int fps) {
-    _fps = fps;
-    return this;
-  }
-  
-  public Window build() {
-    if(_contexts.isEmpty()) {
-      throw new NullPointerException("No context builders were registered before attempting to build a context"); //$NON-NLS-1$
+  /**
+   * Builds the {@link Window}.
+   * @return a {@link Window} based on the input parameters
+   * @throws LWJGLException
+   */
+  public Window build() throws LWJGLException {
+    class State {
+      Window window;
+      LWJGLException e;
     }
     
-    AbstractContext ctx = buildSuitableContext(builder -> {
-      initDisplay();
-      createDisplay(builder);
-      return builder.create(_blending, _clear, _w, _h, _fps);
+    State state = new State();
+    
+    Thread thread = new Thread(new Runnable() {
+      public void run() {
+        if(_builder == null) {
+          _builder = new ContextBuilder();
+        }
+        
+        try {
+          initDisplay();
+          createDisplay(_builder);
+        } catch(LWJGLException e) {
+          state.e = e;
+        }
+        
+        Context ctx = _builder.build(_w, _h);
+        
+        logContextInfo();
+        
+        synchronized(state) {
+          state.window = createWindowFromContext(ctx);
+          state.notifyAll();
+        }
+        
+        ctx.run();
+      }
     });
     
-    logContextInfo();
-    
-    return createWindowFromContext(ctx);
-  }
-  
-  private AbstractContext buildSuitableContext(ContextBuilderIteration r) {
-    for(Class<? extends AbstractContextBuilder> c : _contexts) {
-      try {
-        try {
-          AbstractContextBuilder ctx = c.newInstance();
-          return r.build(ctx);
-        } catch(LWJGLException e) {
-          logger.error("Couldn't instanciate " + c, e);
+    synchronized(state) {
+      thread.start();
+      
+      while(state.window == null) {
+        try{
+          state.wait();
+        } catch(InterruptedException e) {
         }
-      } catch(InstantiationException | IllegalAccessException e) {
-        logger.error("Error creating context", e); //$NON-NLS-1$
-        e.printStackTrace();
       }
     }
     
-    return null;
+    if(state.e != null) {
+      throw state.e;
+    }
+    
+    return state.window;
   }
   
   private void initDisplay() throws LWJGLException {
@@ -108,11 +153,11 @@ public class WindowBuilder {
     Display.setDisplayMode(new DisplayMode(_w, _h));
   }
   
-  private void createDisplay(AbstractContextBuilder builder) throws LWJGLException {
-    Display.create(builder.createPixelFormat(), builder.createContextAttribs());
+  private void createDisplay(ContextBuilder builder) throws LWJGLException {
+    Display.create(builder.format(), builder.attribs());
   }
   
-  private Window createWindowFromContext(AbstractContext ctx) {
+  private Window createWindowFromContext(Context ctx) {
     return new Window(ctx);
   }
   
@@ -121,9 +166,5 @@ public class WindowBuilder {
     logger.info("Display adapter: {}", Display.getAdapter()); //$NON-NLS-1$
     logger.info("Driver version:  {}", Display.getVersion()); //$NON-NLS-1$
     logger.info("OpenGL version:  {}", GL11.glGetString(GL11.GL_VERSION)); //$NON-NLS-1$
-  }
-  
-  private interface ContextBuilderIteration {
-    public AbstractContext build(AbstractContextBuilder ctx) throws LWJGLException;
   }
 }

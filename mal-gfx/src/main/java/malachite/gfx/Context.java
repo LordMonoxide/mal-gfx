@@ -4,7 +4,7 @@ import org.lwjgl.Sys;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 
-public abstract class AbstractContext {
+public class Context {
   private boolean _running;
   
   private int    _fpsLimit;
@@ -14,12 +14,9 @@ public abstract class AbstractContext {
   
   private final double[] _spf = new double[10];
   
-  protected AbstractContext(int fps) {
+  Context(int fps) {
     _fpsLimit = fps;
   }
-  
-  protected abstract void updateSize();
-  protected abstract void cleanup();
   
   public void destroy() {
     if(_running) {
@@ -29,6 +26,14 @@ public abstract class AbstractContext {
       
       Display.destroy();
     }
+  }
+  
+  private void cleanup() {
+    
+  }
+  
+  private void updateSize() {
+    
   }
   
   void run() {

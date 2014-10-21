@@ -1,14 +1,9 @@
 package malachite.gfx;
 
 public class Window {
-  private final AbstractContext _ctx;
+  private final Context _ctx;
   
-  Window(AbstractContext ctx) {
+  Window(Context ctx) {
     _ctx = ctx;
-    _ctx.run();
-  }
-  
-  public void close() {
-    _ctx.destroy();
   }
 }
