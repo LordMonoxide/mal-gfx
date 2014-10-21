@@ -140,7 +140,7 @@ public class WindowBuilder {
         // Run the context in this thread
         ctx.run();
       }
-    });
+    }, "OpenGL");
     
     // Start the GL thread and wait for
     // either Window creation or an error
