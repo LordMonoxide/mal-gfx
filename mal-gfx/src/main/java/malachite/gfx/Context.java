@@ -1,8 +1,15 @@
 package malachite.gfx;
 
+import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
+
+import org.lwjgl.BufferUtils;
 import org.lwjgl.Sys;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL15;
+import org.lwjgl.opengl.GL20;
+import org.lwjgl.opengl.GL30;
 
 public class Context {
   private boolean _running;
@@ -39,16 +46,79 @@ public class Context {
   void run() {
     updateSize();
     
+    float[] vertices = {
+      -0.5f,  0.5f, 0f,
+      -0.5f, -0.5f, 0f,
+       0.5f, -0.5f, 0f,
+       0.5f,  0.5f, 0f,
+    };
+    
+    byte[] indices = {
+      // Left bottom triangle
+      0, 1, 2,
+      // Right top triangle
+      2, 3, 0
+    };
+    
+    FloatBuffer verticesBuffer = BufferUtils.createFloatBuffer(vertices.length);
+    verticesBuffer.put(vertices);
+    verticesBuffer.flip();
+    
+    int indicesCount = indices.length;
+    ByteBuffer indicesBuffer = BufferUtils.createByteBuffer(indicesCount);
+    indicesBuffer.put(indices);
+    indicesBuffer.flip();
+    
+    int vaoId = GL30.glGenVertexArrays();
+    GL30.glBindVertexArray(vaoId);
+    
+    int vboId = GL15.glGenBuffers();
+    GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboId);
+    GL15.glBufferData(GL15.GL_ARRAY_BUFFER, verticesBuffer, GL15.GL_STATIC_DRAW);
+    GL20.glVertexAttribPointer(0, 3, GL11.GL_FLOAT, false, 0, 0);
+    GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+    
+    GL30.glBindVertexArray(0);
+    
+    int vboiId = GL15.glGenBuffers();
+    GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, vboiId);
+    GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL15.GL_STATIC_DRAW);
+    GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0);
+    
     _running = true;
     
     while(_running) {
       checkContext();
       clearContext();
       drawScene();
+      
+      
+      GL30.glBindVertexArray(vaoId);
+      GL20.glEnableVertexAttribArray(0);
+      
+      GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, vboiId);
+      
+      GL11.glDrawElements(GL11.GL_TRIANGLES, indicesCount, GL11.GL_UNSIGNED_BYTE, 0);
+      
+      GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0);
+      GL20.glDisableVertexAttribArray(0);
+      GL30.glBindVertexArray(0);
+      
+      
       updateContext();
       updateFrameRate();
       syncContext();
     }
+    
+    GL20.glDisableVertexAttribArray(0);
+    
+    // Delete the VBO
+    GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+    GL15.glDeleteBuffers(vboId);
+    
+    // Delete the VAO
+    GL30.glBindVertexArray(0);
+    GL30.glDeleteVertexArrays(vaoId);
     
     destroy();
   }
