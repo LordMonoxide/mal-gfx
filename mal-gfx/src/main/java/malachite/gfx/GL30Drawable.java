@@ -8,7 +8,13 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GLContext;
 
+/**
+ * An implementation of {@link:Drawable} using VBOs.
+ * Requires GL_ARB_vertex_array_object
+ * @author Corey Frenette
+ */
 public class GL30Drawable {
   private int _vaID;
   private int _vbID;
@@ -41,6 +47,8 @@ public class GL30Drawable {
     
     _vaID = GL30.glGenVertexArrays();
     GL30.glBindVertexArray(_vaID);
+    
+    System.out.println(GLContext.getCapabilities().GL_ARB_vertex_array_object);
     
     int vbID = GL15.glGenBuffers();
     GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbID);
