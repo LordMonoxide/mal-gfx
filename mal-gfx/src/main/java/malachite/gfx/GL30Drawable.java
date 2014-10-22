@@ -12,12 +12,12 @@ import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GLContext;
 
 /**
- * <p>An implementation of {@link:Drawable} using VBOs.</p>
+ * <p>An implementation of {@link Drawable} using VBOs.</p>
  * <p><b>Requires</b> {@code OpenGL 3.0} <i>or</i> {@code OpenGL 2.0}
  * with {@code GL_ARB_vertex_array_object} extension</p>
  * @author Corey Frenette
  */
-public class GL30Drawable {
+public class GL30Drawable implements Drawable {
   public static boolean test() {
     ContextCapabilities caps = GLContext.getCapabilities();
     
@@ -71,13 +71,13 @@ public class GL30Drawable {
     GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0);
   }
   
-  public void destroy() {
+  @Override public void destroy() {
     GL15.glDeleteBuffers(_vbID);
     GL15.glDeleteBuffers(_ibID);
     GL30.glDeleteVertexArrays(_vaID);
   }
   
-  public void draw() {
+  @Override public void draw() {
     GL30.glBindVertexArray(_vaID);
     GL20.glEnableVertexAttribArray(0);
     
