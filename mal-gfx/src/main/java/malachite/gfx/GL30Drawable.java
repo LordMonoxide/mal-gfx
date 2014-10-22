@@ -4,6 +4,7 @@ import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 
 import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.ContextCapabilities;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
@@ -11,11 +12,19 @@ import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GLContext;
 
 /**
- * An implementation of {@link:Drawable} using VBOs.
- * Requires GL_ARB_vertex_array_object
+ * <p>An implementation of {@link:Drawable} using VBOs.</p>
+ * <p><b>Requires</b> {@code OpenGL 3.0} <i>or</i> {@code OpenGL 2.0}
+ * with {@code GL_ARB_vertex_array_object} extension</p>
  * @author Corey Frenette
  */
 public class GL30Drawable {
+  public static boolean test() {
+    ContextCapabilities caps = GLContext.getCapabilities();
+    
+    return caps.OpenGL30
+        || caps.OpenGL21 && caps.GL_ARB_vertex_buffer_object;
+  }
+  
   private int _vaID;
   private int _vbID;
   private int _ibID;
@@ -47,8 +56,6 @@ public class GL30Drawable {
     
     _vaID = GL30.glGenVertexArrays();
     GL30.glBindVertexArray(_vaID);
-    
-    System.out.println(GLContext.getCapabilities().GL_ARB_vertex_array_object);
     
     int vbID = GL15.glGenBuffers();
     GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbID);
