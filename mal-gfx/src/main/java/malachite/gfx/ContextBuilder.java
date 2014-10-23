@@ -2,6 +2,8 @@ package malachite.gfx;
 
 import java.util.Objects;
 
+import malachite.gfx.providers.Providers;
+
 import org.lwjgl.opengl.ContextAttribs;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.PixelFormat;
@@ -15,12 +17,23 @@ import org.lwjgl.opengl.PixelFormat;
  * @see WindowBuilder#withContextBuilder(ContextBuilder)
  */
 public class ContextBuilder {
+  private Providers _providers = new Providers();
   private PixelFormat _format = new PixelFormat();
   private ContextAttribs _attribs = new ContextAttribs();
   private boolean _blending = true;
   private int _fps = 60;
   
   protected ContextBuilder() { }
+  
+  /**
+   * Sets the {@link Providers} to be used by the constructed {@link Context}.
+   * @param providers a non-null instance of the {@link Providers} class
+   * @return this
+   */
+  public ContextBuilder withProviders(Providers providers) {
+    _providers = Objects.requireNonNull(providers);
+    return this;
+  }
   
   /**
    * Sets the {@link PixelFormat} to be used by the constructed {@link Context}.
@@ -76,6 +89,6 @@ public class ContextBuilder {
       GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
     }
     
-    return new Context(_fps);
+    return new Context<>(_fps, _providers);
   }
 }

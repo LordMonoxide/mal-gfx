@@ -1,10 +1,14 @@
 package malachite.gfx;
 
+import malachite.gfx.providers.Providers;
+
 import org.lwjgl.Sys;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 
-public class Context {
+public class Context<ProvidersT extends Providers> {
+  public final ProvidersT providers;
+  
   private boolean _running;
   
   private int    _fpsLimit;
@@ -14,7 +18,8 @@ public class Context {
   
   private final double[] _spf = new double[10];
   
-  Context(int fps) {
+  Context(int fps, ProvidersT providers) {
+    this.providers = providers;
     _fpsLimit = fps;
   }
   
