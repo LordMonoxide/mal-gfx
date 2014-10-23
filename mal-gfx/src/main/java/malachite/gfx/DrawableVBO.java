@@ -37,7 +37,7 @@ public class DrawableVBO extends Drawable {
     super(vertices, indices);
   }
   
-  protected void create(float[] vertices, byte[] indices) {
+  @Override protected void create(float[] vertices, byte[] indices) {
     FloatBuffer verticesBuffer = BufferUtils.createFloatBuffer(vertices.length);
     verticesBuffer.put(vertices);
     verticesBuffer.flip();

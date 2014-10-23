@@ -21,7 +21,7 @@ public class WindowBuilder {
       Window window = new WindowBuilder()
         .withTitle("Test").build();
     } catch(LWJGLException e) {
-      logger.error("Error while building window", e);
+      logger.error("Error while building window", e); //$NON-NLS-1$
     }
   }
   
@@ -112,7 +112,7 @@ public class WindowBuilder {
     
     // Create OpenGL in a new thread
     Thread thread = new Thread(new Runnable() {
-      public void run() {
+      @Override public void run() {
         try {
           // Try to create the display
           initDisplay();
@@ -126,7 +126,7 @@ public class WindowBuilder {
         }
         
         // Build the context itself
-        Context ctx = _builder.build(_w, _h);
+        Context<?> ctx = _builder.build(_w, _h);
         
         // Log some info about the environment
         logContextInfo();
@@ -140,7 +140,7 @@ public class WindowBuilder {
         // Run the context in this thread
         ctx.run();
       }
-    }, "OpenGL");
+    }, "OpenGL"); //$NON-NLS-1$
     
     // Start the GL thread and wait for
     // either Window creation or an error
@@ -150,7 +150,7 @@ public class WindowBuilder {
       while(state.window == null && state.e == null) {
         try{
           state.wait();
-        } catch(InterruptedException e) { }
+        } catch(@SuppressWarnings("unused") InterruptedException e) { }
       }
     }
     
@@ -174,7 +174,7 @@ public class WindowBuilder {
     Display.create(builder.format(), builder.attribs());
   }
   
-  private Window createWindowFromContext(Context ctx) {
+  private Window createWindowFromContext(Context<?> ctx) {
     return new Window(ctx);
   }
   

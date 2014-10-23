@@ -23,7 +23,7 @@ public class DrawableProvider {
     try {
       return (Drawable)_drawable.getConstructors()[0].newInstance(vertices, indices);
     } catch(InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
-      logger.error("A fatal error occurred when creating a new drawable.", e);
+      logger.error("A fatal error occurred when creating a new drawable.", e); //$NON-NLS-1$
       throw new RuntimeException(e);
     }
   }
