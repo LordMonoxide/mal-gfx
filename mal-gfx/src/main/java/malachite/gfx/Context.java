@@ -44,7 +44,7 @@ public class Context<ProvidersT extends Providers> {
   void run() {
     updateSize();
     
-    DrawableVBOIndexed drawable = new DrawableVBOIndexed();
+    DrawableVBO drawable = new DrawableVBO();
     
     _running = true;
     

@@ -3,7 +3,7 @@ package malachite.gfx.providers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import malachite.gfx.DrawableVBOIndexed;
+import malachite.gfx.DrawableVBO;
 import malachite.gfx.interfaces.Drawable;
 
 public class DrawableProvider {
@@ -12,8 +12,8 @@ public class DrawableProvider {
   public Class<? extends Drawable> _drawable;
   
   public DrawableProvider() {
-    if(DrawableVBOIndexed.test()) {
-      _drawable = DrawableVBOIndexed.class;
+    if(DrawableVBO.test()) {
+      _drawable = DrawableVBO.class;
     }
   }
   
