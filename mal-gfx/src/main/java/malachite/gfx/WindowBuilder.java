@@ -126,7 +126,7 @@ public class WindowBuilder {
         }
         
         // Build the context itself
-        Context<?> ctx = _builder.build(_w, _h);
+        Context<?> ctx = _builder.build();
         
         // Log some info about the environment
         logContextInfo();
