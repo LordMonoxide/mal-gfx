@@ -1,5 +1,6 @@
 package malachite.gfx;
 
+import malachite.gfx.interfaces.Drawable;
 import malachite.gfx.providers.Providers;
 
 import org.lwjgl.Sys;
@@ -21,6 +22,8 @@ public class Context<ProvidersT extends Providers> {
   Context(int fps, ProvidersT providers) {
     this.providers = providers;
     _fpsLimit = fps;
+    
+    providers.refresh();
   }
   
   public void destroy() {
@@ -44,7 +47,17 @@ public class Context<ProvidersT extends Providers> {
   void run() {
     updateSize();
     
-    DrawableVBO drawable = new DrawableVBO();
+    Drawable drawable = providers.drawable.create(
+      new float[] {
+        -0.5f,  0.5f, 0f,
+        -0.5f, -0.5f, 0f,
+         0.5f, -0.5f, 0f,
+         0.5f,  0.5f, 0f,
+      }, new byte[] {
+        0, 1, 2,
+        2, 3, 0
+      }
+    );
     
     _running = true;
     

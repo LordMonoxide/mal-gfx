@@ -1,5 +1,7 @@
 package malachite.gfx.providers;
 
+import java.lang.reflect.InvocationTargetException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,16 +13,16 @@ public class DrawableProvider {
   
   public Class<? extends Drawable> _drawable;
   
-  public DrawableProvider() {
+  public void refresh() {
     if(DrawableVBO.test()) {
       _drawable = DrawableVBO.class;
     }
   }
   
-  public Drawable create() {
+  public Drawable create(float[] vertices, byte[] indices) {
     try {
-      return _drawable.newInstance();
-    } catch(InstantiationException | IllegalAccessException e) {
+      return (Drawable)_drawable.getConstructors()[0].newInstance(vertices, indices);
+    } catch(InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
       logger.error("A fatal error occurred when creating a new drawable.", e);
       throw new RuntimeException(e);
     }
