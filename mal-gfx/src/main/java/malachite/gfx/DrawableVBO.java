@@ -19,7 +19,7 @@ import org.lwjgl.opengl.GLContext;
  * with {@code GL_ARB_vertex_array_object} extension</p>
  * @author Corey Frenette
  */
-public class DrawableVBO implements Drawable {
+public class DrawableVBO extends Drawable {
   public static boolean test() {
     ContextCapabilities caps = GLContext.getCapabilities();
     
@@ -33,26 +33,16 @@ public class DrawableVBO implements Drawable {
   private int _vertices;
   private int _indices;
   
-  DrawableVBO() {
-    float[] vertices = {
-      -0.5f,  0.5f, 0f,
-      -0.5f, -0.5f, 0f,
-       0.5f, -0.5f, 0f,
-       0.5f,  0.5f, 0f,
-    };
-    
-    byte[] indices = {
-      // Left bottom triangle
-      0, 1, 2,
-      // Right top triangle
-      2, 3, 0
-    };
-    
+  public DrawableVBO(float[] vertices, byte[] indices) {
+    super(vertices, indices);
+  }
+  
+  protected void create(float[] vertices, byte[] indices) {
     FloatBuffer verticesBuffer = BufferUtils.createFloatBuffer(vertices.length);
     verticesBuffer.put(vertices);
     verticesBuffer.flip();
     
-    ByteBuffer indicesBuffer = BufferUtils.createByteBuffer(_indices);
+    ByteBuffer indicesBuffer = BufferUtils.createByteBuffer(indices.length);
     indicesBuffer.put(indices);
     indicesBuffer.flip();
     

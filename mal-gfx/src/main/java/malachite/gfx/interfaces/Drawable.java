@@ -1,6 +1,12 @@
 package malachite.gfx.interfaces;
 
-public interface Drawable {
-  public void destroy();
-  public void draw();
+public abstract class Drawable {
+  public Drawable(float[] vertices, byte[] indices) {
+    create(vertices, indices);
+  }
+  
+  protected abstract void create(float[] vertices, byte[] indices);
+  
+  public abstract void destroy();
+  public abstract void draw();
 }
