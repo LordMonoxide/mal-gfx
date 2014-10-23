@@ -1,4 +1,4 @@
-package malachite.gfx;
+package malachite.gfx.interfaces;
 
 public interface Drawable {
   public void destroy();

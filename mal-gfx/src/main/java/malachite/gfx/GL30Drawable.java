@@ -3,6 +3,8 @@ package malachite.gfx;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 
+import malachite.gfx.interfaces.Drawable;
+
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.ContextCapabilities;
 import org.lwjgl.opengl.GL11;
