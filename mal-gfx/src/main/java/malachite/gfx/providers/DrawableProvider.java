@@ -11,7 +11,7 @@ import malachite.gfx.interfaces.Drawable;
 public class DrawableProvider {
   private static Logger logger = LoggerFactory.getLogger(DrawableProvider.class);
   
-  public Class<? extends Drawable> _drawable;
+  private Class<? extends Drawable> _drawable;
   
   public void refresh() {
     if(DrawableVBO.test()) {
