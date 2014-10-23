@@ -51,17 +51,22 @@ public class GL30Drawable implements Drawable {
     verticesBuffer.put(vertices);
     verticesBuffer.flip();
     
-    _indices = indices.length;
     ByteBuffer indicesBuffer = BufferUtils.createByteBuffer(_indices);
     indicesBuffer.put(indices);
     indicesBuffer.flip();
+    
+    updateVBO(verticesBuffer, indicesBuffer);
+  }
+  
+  private void updateVBO(FloatBuffer vertices, ByteBuffer indices) {
+    _indices = indices.remaining();
     
     _vaID = GL30.glGenVertexArrays();
     GL30.glBindVertexArray(_vaID);
     
     int vbID = GL15.glGenBuffers();
     GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbID);
-    GL15.glBufferData(GL15.GL_ARRAY_BUFFER, verticesBuffer, GL15.GL_STATIC_DRAW);
+    GL15.glBufferData(GL15.GL_ARRAY_BUFFER, vertices, GL15.GL_STATIC_DRAW);
     GL20.glVertexAttribPointer(0, 3, GL11.GL_FLOAT, false, 0, 0);
     GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
     
@@ -69,7 +74,7 @@ public class GL30Drawable implements Drawable {
     
     _ibID = GL15.glGenBuffers();
     GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, _ibID);
-    GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL15.GL_STATIC_DRAW);
+    GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, indices, GL15.GL_STATIC_DRAW);
     GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0);
   }
   
