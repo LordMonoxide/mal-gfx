@@ -44,7 +44,7 @@ public class Context<ProvidersT extends Providers> {
   void run() {
     updateSize();
     
-    GL30Drawable drawable = new GL30Drawable();
+    DrawableVBOIndexed drawable = new DrawableVBOIndexed();
     
     _running = true;
     

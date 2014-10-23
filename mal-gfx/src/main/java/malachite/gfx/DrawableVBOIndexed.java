@@ -19,7 +19,7 @@ import org.lwjgl.opengl.GLContext;
  * with {@code GL_ARB_vertex_array_object} extension</p>
  * @author Corey Frenette
  */
-public class GL30Drawable implements Drawable {
+public class DrawableVBOIndexed implements Drawable {
   public static boolean test() {
     ContextCapabilities caps = GLContext.getCapabilities();
     
@@ -32,7 +32,7 @@ public class GL30Drawable implements Drawable {
   private int _ibID;
   private int _indices;
   
-  GL30Drawable() {
+  DrawableVBOIndexed() {
     float[] vertices = {
       -0.5f,  0.5f, 0f,
       -0.5f, -0.5f, 0f,
