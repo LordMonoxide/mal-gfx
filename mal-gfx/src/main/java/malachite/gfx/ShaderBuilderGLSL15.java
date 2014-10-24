@@ -5,9 +5,9 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GLContext;
 
-import malachite.gfx.interfaces.Shader;
+import malachite.gfx.interfaces.ShaderBuilder;
 
-public class ShaderGLSL15 implements Shader {
+public class ShaderBuilderGLSL15 extends ShaderBuilder {
   public static boolean test() {
     ContextCapabilities caps = GLContext.getCapabilities();
     
@@ -25,11 +25,11 @@ public class ShaderGLSL15 implements Shader {
     return version >= 150;
   }
   
-  @Override public String version() {
+  @Override protected String version() {
     return "#version 1.50";
   }
   
-  @Override public String variable(VARIABLE_MODE direction, String type, String name) {
+  @Override protected String variable(VARIABLE_MODE direction, String type, String name) {
     StringBuilder ret = new StringBuilder()
        .append(direction == VARIABLE_MODE.IN ? "in " : "out ")
        .append(type).append(' ')
@@ -37,7 +37,7 @@ public class ShaderGLSL15 implements Shader {
     return ret.toString();
   }
   
-  @Override public String function(String type, String name, String... args) {
+  @Override protected String function(String type, String name, ShaderFunctionCallback callback, String... args) {
     StringBuilder ret = new StringBuilder()
        .append(type).append(' ')
        .append(name).append('(');
@@ -50,8 +50,14 @@ public class ShaderGLSL15 implements Shader {
       }
     }
     
-    ret.append(')');
+    ret.append(") {\n");
     
-    return null;
+    ShaderFunctionBuilder fn = new ShaderFunctionBuilder();
+    callback.run(fn);
+    ret.append(fn.build());
+    
+    ret.append('}');
+    
+    return ret.toString();
   }
 }
