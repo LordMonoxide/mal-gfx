@@ -3,6 +3,7 @@ package malachite.gfx.providers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import malachite.gfx.ShaderLanguageGLSL12;
 import malachite.gfx.ShaderLanguageGLSL15;
 import malachite.gfx.interfaces.ShaderLanguage;
 
@@ -14,6 +15,8 @@ public class ShaderProvider {
   public void refresh() {
     if(ShaderLanguageGLSL15.test()) {
       _shader = ShaderLanguageGLSL15.class;
+    } else if(ShaderLanguageGLSL12.test()) {
+      _shader = ShaderLanguageGLSL12.class;
     }
   }
   
