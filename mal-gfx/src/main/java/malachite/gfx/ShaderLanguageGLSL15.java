@@ -5,8 +5,6 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GLContext;
 
-import malachite.gfx.ShaderBuilder.ShaderFunctionBuilder;
-import malachite.gfx.ShaderBuilder.ShaderFunctionCallback;
 import malachite.gfx.interfaces.ShaderLanguage;
 
 public class ShaderLanguageGLSL15 implements ShaderLanguage {
@@ -20,46 +18,62 @@ public class ShaderLanguageGLSL15 implements ShaderLanguage {
     
     // Grab the version string, remove the vendor-specific info,
     // split the version by the decimal, and jam it into an int
-    String[] versionString = GL11.glGetString(GL20.GL_SHADING_LANGUAGE_VERSION).split(" ")[0].split("\\.");
+    String[] versionString = GL11.glGetString(GL20.GL_SHADING_LANGUAGE_VERSION).split(" ")[0].split("\\."); //$NON-NLS-1$ //$NON-NLS-2$
     int version = Integer.parseInt(versionString[0]) * 100 + Integer.parseInt(versionString[1]);
     
     // Return true if we have at least version 1.50, false otherwise
     return version >= 150;
   }
   
-  @Override public String version() {
-    return "#version 1.50";
+  @Override public void version(ShaderBuilder builder) {
+    builder.raw("#version 1.50"); //$NON-NLS-1$
   }
   
-  @Override public String variable(ShaderBuilder.VARIABLE_MODE direction, String type, String name) {
-    StringBuilder ret = new StringBuilder()
-       .append(direction == VARIABLE_MODE.IN ? "in " : "out ")
-       .append(type).append(' ')
-       .append(name);
-    return ret.toString();
-  }
-  
-  @Override public String function(ShaderBuilder.Function builder) {
-    StringBuilder ret = new StringBuilder()
-       .append(type).append(' ')
-       .append(name).append('(');
+  @Override public void variable(ShaderBuilder builder, ShaderBuilder.Variable variable) {
+    String direction = null,
+           prefix    = null;
     
-    for(int i = 0; i < args.length; i++) {
-      ret.append(args[i]);
+    switch(variable.mode) {
+      case IN: 
+        direction = "in";  //$NON-NLS-1$
+        prefix    = "in_"; //$NON-NLS-1$
+        break;
+        
+      case OUT:
+        direction = "out";  //$NON-NLS-1$
+        prefix    = "out_"; //$NON-NLS-1$
+        break;
+        
+      case PASS:
+        builder.raw("in "  + variable.type + " in_"   + variable.name + ';'); //$NON-NLS-1$ //$NON-NLS-2$
+        builder.raw("out " + variable.type + " pass_" + variable.name + ';'); //$NON-NLS-1$ //$NON-NLS-2$
+        return;
+    }
+    
+    builder.raw(direction + ' ' + variable.type + ' ' + prefix + variable.name + ';');
+  }
+  
+  @Override public void function(ShaderBuilder builder, ShaderBuilder.Function function) {
+    StringBuilder ret = new StringBuilder()
+       .append(function.type).append(' ')
+       .append(function.name).append('(');
+    
+    for(int i = 0; i < function.args.length; i++) {
+      ret.append(function.args[i]);
       
-      if(i < args.length - 1) {
+      if(i < function.args.length - 1) {
         ret.append(',');
       }
     }
     
-    ret.append(") {\n");
+    ret.append(") {\n"); //$NON-NLS-1$
     
-    FunctionBuilder fn = new FunctionBuilder();
-    callback.run(fn);
-    ret.append(fn.build());
+    for(String line : function.line) {
+      ret.append(line).append('\n');
+    }
     
     ret.append('}');
     
-    return ret.toString();
+    builder.raw(ret.toString());
   }
 }

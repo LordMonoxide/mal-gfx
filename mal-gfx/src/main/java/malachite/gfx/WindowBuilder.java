@@ -28,13 +28,13 @@ public class WindowBuilder {
       logger.error("Error while building window", e); //$NON-NLS-1$
     }
     
-    Shader s = new ShaderBuilder(window.ctx)
+    Shader s = new ShaderBuilder(window.ctx.providers.shader.create())
       .variable(VARIABLE_MODE.IN,   "vec4", "pos")
       .variable(VARIABLE_MODE.PASS, "vec4", "col")
       
       .function("void", "main")
-        .raw("gl_Position=in_Pos;")
-        .raw("pass_Col=in_Col;")
+        .raw("gl_Position=in_pos;")
+        .raw("pass_Col=in_col;")
       .build()
     .build();
   }
