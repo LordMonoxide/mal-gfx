@@ -2,6 +2,8 @@ package malachite.gfx;
 
 import java.util.Objects;
 
+import malachite.gfx.ShaderBuilder.VARIABLE_MODE;
+
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
@@ -17,12 +19,24 @@ import org.slf4j.LoggerFactory;
  */
 public class WindowBuilder {
   public static void main(String[] args) {
+    Window window = null;
+    
     try {
-      Window window = new WindowBuilder()
+      window = new WindowBuilder()
         .withTitle("Test").build();
     } catch(LWJGLException e) {
       logger.error("Error while building window", e); //$NON-NLS-1$
     }
+    
+    Shader s = new ShaderBuilder(window.ctx)
+      .variable(VARIABLE_MODE.IN,   "vec4", "pos")
+      .variable(VARIABLE_MODE.PASS, "vec4", "col")
+      
+      .function("void", "main")
+        .raw("gl_Position=in_Pos;")
+        .raw("pass_Col=in_Col;")
+      .build()
+    .build();
   }
   
   private static final Logger logger = LoggerFactory.getLogger(WindowBuilder.class);

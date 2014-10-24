@@ -1,9 +1,9 @@
 package malachite.gfx;
 
 public class Window {
-  private final Context<?> _ctx;
+  public final Context<?> ctx;
   
   Window(Context<?> ctx) {
-    _ctx = ctx;
+    this.ctx = ctx;
   }
 }

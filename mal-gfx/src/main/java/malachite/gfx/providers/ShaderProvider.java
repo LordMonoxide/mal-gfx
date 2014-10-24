@@ -1,14 +1,14 @@
 package malachite.gfx.providers;
 
-import malachite.gfx.ShaderBuilderGLSL15;
-import malachite.gfx.interfaces.ShaderBuilder;
+import malachite.gfx.ShaderLanguageGLSL15;
+import malachite.gfx.interfaces.ShaderLanguage;
 
 public class ShaderProvider {
-  private Class<? extends ShaderBuilder> _shader;
+  private Class<? extends ShaderLanguage> _shader;
   
   public void refresh() {
-    if(ShaderBuilderGLSL15.test()) {
-      _shader = ShaderBuilderGLSL15.class;
+    if(ShaderLanguageGLSL15.test()) {
+      _shader = ShaderLanguageGLSL15.class;
     }
   }
 }
