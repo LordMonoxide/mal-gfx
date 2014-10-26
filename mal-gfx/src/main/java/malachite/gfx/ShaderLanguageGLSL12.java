@@ -5,7 +5,6 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GLContext;
 
-import malachite.gfx.ShaderBuilder.Function;
 import malachite.gfx.ShaderBuilder.Variable;
 import malachite.gfx.interfaces.ShaderLanguage;
 
@@ -33,7 +32,7 @@ public class ShaderLanguageGLSL12 implements ShaderLanguage {
   
   @Override public void variable(ShaderBuilder builder, Variable variable) {
     String direction = null,
-        prefix    = null;
+           prefix    = null;
     
     switch(variable.mode) {
       case IN: 
@@ -54,10 +53,10 @@ public class ShaderLanguageGLSL12 implements ShaderLanguage {
     builder.raw(direction + ' ' + variable.type + ' ' + prefix + variable.name + ';');
   }
   
-  @Override public void function(ShaderBuilder builder, Function function) {
+  @Override public void function(ShaderBuilder.StageBuilder builder, ShaderBuilder.StageBuilder.Function function) {
     StringBuilder ret = new StringBuilder()
-    .append(function.type).append(' ')
-    .append(function.name).append('(');
+      .append(function.type).append(' ')
+      .append(function.name).append('(');
     
     for(int i = 0; i < function.args.length; i++) {
       ret.append(function.args[i]);
@@ -76,5 +75,13 @@ public class ShaderLanguageGLSL12 implements ShaderLanguage {
     ret.append('}');
     
     builder.raw(ret.toString());
+  }
+  
+  @Override public void finalizeVSH(ShaderBuilder.StageBuilder builder) {
+    builder.main().raw("gl_Position=in_pos;");
+  }
+  
+  @Override public void finalizeFSH(ShaderBuilder.StageBuilder builder) {
+    builder.main().raw("gl_FrontColour=in_col;");
   }
 }

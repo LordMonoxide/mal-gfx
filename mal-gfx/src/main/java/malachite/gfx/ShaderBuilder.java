@@ -6,33 +6,17 @@ import java.util.List;
 import malachite.gfx.interfaces.ShaderLanguage;
 
 public class ShaderBuilder {
+  public final StageBuilder vsh = new StageBuilder(this);
+  public final StageBuilder fsh = new StageBuilder(this);
+  
   private final ShaderLanguage _language;
   
   private final List<Variable> _variables = new ArrayList<>();
-  private final List<Function> _functions = new ArrayList<>();
   
   private StringBuilder _code;
   
   ShaderBuilder(ShaderLanguage language) {
     _language = language;
-  }
-  
-  public Shader build() {
-    _code = new StringBuilder();
-    
-    _language.version(this);
-    
-    for(Variable variable : _variables) {
-      _language.variable(this, variable);
-    }
-    
-    for(Function function : _functions) {
-      _language.function(this, function);
-    }
-    
-    System.out.println(_code.toString());
-    
-    return null;
   }
   
   public ShaderBuilder raw(String code) {
@@ -45,43 +29,116 @@ public class ShaderBuilder {
     return this;
   }
   
-  public FunctionBuilder function(String type, String name) {
-    return new FunctionBuilder(this, type, name);
+  public Shader build() {
+    _code = new StringBuilder();
+    
+    _language.version(this);
+    
+    _language.variable(this, new Variable(VARIABLE_MODE.IN,    "vec4", "pos"));
+    _language.variable(this, new Variable(VARIABLE_MODE.INOUT, "vec4", "col"));
+    
+    for(Variable variable : _variables) {
+      _language.variable(this, variable);
+    }
+    
+    System.out.println(_code.toString());
+    
+    return null;
   }
   
-  public class FunctionBuilder {
+  public class StageBuilder {
     private final ShaderBuilder _sb;
     
-    private final List<Argument> _args = new ArrayList<>();
-    private final List<String>   _line = new ArrayList<>();
+    private final List<Function> _functions = new ArrayList<>();
     
-    private String _type;
-    private String _name;
+    private final FunctionBuilder _main = new FunctionBuilder(this, "void", "main");
     
-    private FunctionBuilder(ShaderBuilder sb, String type, String name) {
-      _sb   = sb;
-      _type = type;
-      _name = name;
+    private StageBuilder(ShaderBuilder sb) {
+      _sb = sb;
     }
     
-    public FunctionBuilder argument(String type, String name) {
-      _args.add(new Argument(type, name));
+    public StageBuilder raw(String code) {
+      _code.append(code).append('\n');
       return this;
     }
     
-    public FunctionBuilder raw(String code) {
-      _line.add(code);
-      return this;
+    public FunctionBuilder function(String type, String name) {
+      return new FunctionBuilder(this, type, name);
+    }
+    
+    public FunctionBuilder main() {
+      return _main;
     }
     
     public ShaderBuilder build() {
-      _functions.add(new Function(
-        _type, _name,
-        _args.toArray(new Argument[0]),
-        _line.toArray(new String  [0])
-      ));
+      _language.finalizeVSH(this);
+      _main.build();
+      
+      for(Function function : _functions) {
+        _language.function(this, function);
+      }
       
       return _sb;
+    }
+    
+    public class FunctionBuilder {
+      private final StageBuilder _sb;
+      
+      private final List<Argument> _args = new ArrayList<>();
+      private final List<String>   _line = new ArrayList<>();
+      
+      private String _type;
+      private String _name;
+      
+      private FunctionBuilder(StageBuilder sb, String type, String name) {
+        _sb   = sb;
+        _type = type;
+        _name = name;
+      }
+      
+      public FunctionBuilder argument(String type, String name) {
+        _args.add(new Argument(type, name));
+        return this;
+      }
+      
+      public FunctionBuilder raw(String code) {
+        _line.add(code);
+        return this;
+      }
+      
+      public StageBuilder build() {
+        _functions.add(new Function(
+          _type, _name,
+          _args.toArray(new Argument[0]),
+          _line.toArray(new String  [0])
+        ));
+        
+        return _sb;
+      }
+    }
+    
+    public class Function {
+      public final String     type;
+      public final String     name;
+      public final Argument[] args;
+      public final String  [] line;
+      
+      private Function(String type, String name, Argument[] args, String[] line) {
+        this.type = type;
+        this.name = name;
+        this.args = args;
+        this.line = line;
+      }
+    }
+    
+    public class Argument {
+      public final String type;
+      public final String name;
+      
+      private Argument(String type, String name) {
+        this.type = type;
+        this.name = name;
+      }
     }
   }
   
@@ -97,35 +154,7 @@ public class ShaderBuilder {
     }
   }
   
-  public class Function {
-    public final String     type;
-    public final String     name;
-    public final Argument[] args;
-    public final String  [] line;
-    
-    private Function(String type, String name, Argument[] args, String[] line) {
-      this.type = type;
-      this.name = name;
-      this.args = args;
-      this.line = line;
-    }
-  }
-  
-  public class Argument {
-    public final String type;
-    public final String name;
-    
-    private Argument(String type, String name) {
-      this.type = type;
-      this.name = name;
-    }
-  }
-  
-  public interface FunctionCallback {
-    public void run(Function builder);
-  }
-  
   public enum VARIABLE_MODE {
-    IN, OUT, PASS;
+    IN, OUT, PASS, INOUT;
   }
 }

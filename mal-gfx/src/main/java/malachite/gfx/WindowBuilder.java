@@ -29,13 +29,6 @@ public class WindowBuilder {
     }
     
     Shader s = new ShaderBuilder(window.ctx.providers.shader.create())
-      .variable(VARIABLE_MODE.IN,   "vec4", "pos")
-      .variable(VARIABLE_MODE.PASS, "vec4", "col")
-      
-      .function("void", "main")
-        .raw("gl_Position=in_pos;")
-        .raw("pass_Col=in_col;")
-      .build()
     .build();
   }
   

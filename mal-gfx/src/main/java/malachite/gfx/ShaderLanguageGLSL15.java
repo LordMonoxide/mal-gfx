@@ -53,7 +53,7 @@ public class ShaderLanguageGLSL15 implements ShaderLanguage {
     builder.raw(direction + ' ' + variable.type + ' ' + prefix + variable.name + ';');
   }
   
-  @Override public void function(ShaderBuilder builder, ShaderBuilder.Function function) {
+  @Override public void function(ShaderBuilder.StageBuilder builder, ShaderBuilder.StageBuilder.Function function) {
     StringBuilder ret = new StringBuilder()
        .append(function.type).append(' ')
        .append(function.name).append('(');
@@ -75,5 +75,13 @@ public class ShaderLanguageGLSL15 implements ShaderLanguage {
     ret.append('}');
     
     builder.raw(ret.toString());
+  }
+  
+  @Override public void finalizeVSH(ShaderBuilder.StageBuilder builder) {
+    
+  }
+
+  @Override public void finalizeFSH(ShaderBuilder.StageBuilder builder) {
+    
   }
 }
