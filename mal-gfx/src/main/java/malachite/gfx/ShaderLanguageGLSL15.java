@@ -5,6 +5,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GLContext;
 
+import malachite.gfx.ShaderBuilder.VARIABLE_MODE;
 import malachite.gfx.interfaces.ShaderLanguage;
 
 public class ShaderLanguageGLSL15 implements ShaderLanguage {
@@ -25,32 +26,23 @@ public class ShaderLanguageGLSL15 implements ShaderLanguage {
     return version >= 150;
   }
   
-  @Override public void version(ShaderBuilder builder) {
+  @Override public void version(ShaderBuilder.StageBuilder builder) {
     builder.raw("#version 1.50"); //$NON-NLS-1$
   }
   
   @Override public void variable(ShaderBuilder builder, ShaderBuilder.Variable variable) {
-    String direction = null,
-           prefix    = null;
-    
-    switch(variable.mode) {
-      case IN: 
-        direction = "in";  //$NON-NLS-1$
-        prefix    = "in_"; //$NON-NLS-1$
-        break;
-        
-      case OUT:
-        direction = "out";  //$NON-NLS-1$
-        prefix    = "out_"; //$NON-NLS-1$
-        break;
-        
-      case PASS:
-        builder.raw("in "  + variable.type + " in_"   + variable.name + ';'); //$NON-NLS-1$ //$NON-NLS-2$
-        builder.raw("out " + variable.type + " pass_" + variable.name + ';'); //$NON-NLS-1$ //$NON-NLS-2$
-        return;
+    if(variable.mode.contains(VARIABLE_MODE.IN)) {
+      builder.vsh.raw("in " + variable.type + " in_" + variable.name + ';'); //$NON-NLS-1$ //$NON-NLS-2$
     }
     
-    builder.raw(direction + ' ' + variable.type + ' ' + prefix + variable.name + ';');
+    if(variable.mode.contains(VARIABLE_MODE.OUT)) {
+      builder.fsh.raw("out " + variable.type + " out_" + variable.name + ';'); //$NON-NLS-1$ //$NON-NLS-2$
+    }
+    
+    if(variable.mode.contains(VARIABLE_MODE.PASS)) {
+      builder.vsh.raw("out " + variable.type + " pass_" + variable.name + ';'); //$NON-NLS-1$ //$NON-NLS-2$
+      builder.fsh.raw("in "  + variable.type + " pass_" + variable.name + ';'); //$NON-NLS-1$ //$NON-NLS-2$
+    }
   }
   
   @Override public void function(ShaderBuilder.StageBuilder builder, ShaderBuilder.StageBuilder.Function function) {

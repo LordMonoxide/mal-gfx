@@ -15,8 +15,8 @@ public class ShaderProvider {
   public void refresh() {
     if(ShaderLanguageGLSL15.test()) {
       _shader = ShaderLanguageGLSL15.class;
-    } else if(ShaderLanguageGLSL12.test()) {
-      _shader = ShaderLanguageGLSL12.class;
+    //} else if(ShaderLanguageGLSL12.test()) {
+    //  _shader = ShaderLanguageGLSL12.class;
     }
   }
   

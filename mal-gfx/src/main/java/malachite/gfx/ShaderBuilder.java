@@ -1,6 +1,7 @@
 package malachite.gfx;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 
 import malachite.gfx.interfaces.ShaderLanguage;
@@ -13,35 +14,39 @@ public class ShaderBuilder {
   
   private final List<Variable> _variables = new ArrayList<>();
   
-  private StringBuilder _code;
-  
   ShaderBuilder(ShaderLanguage language) {
     _language = language;
   }
   
-  public ShaderBuilder raw(String code) {
+  /*public ShaderBuilder raw(String code) {
     _code.append(code).append('\n');
     return this;
-  }
+  }*/
   
-  public ShaderBuilder variable(VARIABLE_MODE mode, String type, String name) {
+  public ShaderBuilder variable(EnumSet<VARIABLE_MODE> mode, String type, String name) {
     _variables.add(new Variable(mode, type, name));
     return this;
   }
   
   public Shader build() {
-    _code = new StringBuilder();
+    vsh.init();
+    fsh.init();
     
-    _language.version(this);
+    _language.version(vsh);
+    _language.version(fsh);
     
-    _language.variable(this, new Variable(VARIABLE_MODE.IN,    "vec4", "pos"));
-    _language.variable(this, new Variable(VARIABLE_MODE.INOUT, "vec4", "col"));
+    _language.variable(this, new Variable(EnumSet.of(VARIABLE_MODE.IN),       "vec4", "pos"));
+    _language.variable(this, new Variable(EnumSet.allOf(VARIABLE_MODE.class), "vec4", "col"));
     
     for(Variable variable : _variables) {
       _language.variable(this, variable);
     }
     
-    System.out.println(_code.toString());
+    String vshCode = vsh.build();
+    String fshCode = fsh.build();
+    
+    System.out.println(vshCode);
+    System.out.println(fshCode);
     
     return null;
   }
@@ -53,8 +58,14 @@ public class ShaderBuilder {
     
     private final FunctionBuilder _main = new FunctionBuilder(this, "void", "main");
     
+    private StringBuilder _code;
+    
     private StageBuilder(ShaderBuilder sb) {
       _sb = sb;
+    }
+    
+    private void init() {
+      _code = new StringBuilder();
     }
     
     public StageBuilder raw(String code) {
@@ -70,7 +81,7 @@ public class ShaderBuilder {
       return _main;
     }
     
-    public ShaderBuilder build() {
+    public String build() {
       _language.finalizeVSH(this);
       _main.build();
       
@@ -78,7 +89,7 @@ public class ShaderBuilder {
         _language.function(this, function);
       }
       
-      return _sb;
+      return _code.toString();
     }
     
     public class FunctionBuilder {
@@ -143,11 +154,12 @@ public class ShaderBuilder {
   }
   
   public class Variable {
-    public final VARIABLE_MODE mode;
-    public final String        type;
-    public final String        name;
+    public final EnumSet<VARIABLE_MODE> mode;
     
-    private Variable(VARIABLE_MODE mode, String type, String name) {
+    public final String type;
+    public final String name;
+    
+    private Variable(EnumSet<VARIABLE_MODE> mode, String type, String name) {
       this.mode = mode;
       this.type = type;
       this.name = name;
@@ -155,6 +167,6 @@ public class ShaderBuilder {
   }
   
   public enum VARIABLE_MODE {
-    IN, OUT, PASS, INOUT;
+    IN, OUT, PASS;
   }
 }

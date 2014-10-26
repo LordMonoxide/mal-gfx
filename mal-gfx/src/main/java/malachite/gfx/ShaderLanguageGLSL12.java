@@ -5,6 +5,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GLContext;
 
+import malachite.gfx.ShaderBuilder.VARIABLE_MODE;
 import malachite.gfx.ShaderBuilder.Variable;
 import malachite.gfx.interfaces.ShaderLanguage;
 
@@ -33,6 +34,10 @@ public class ShaderLanguageGLSL12 implements ShaderLanguage {
   @Override public void variable(ShaderBuilder builder, Variable variable) {
     String direction = null,
            prefix    = null;
+    
+    if(variable.mode.contains(VARIABLE_MODE.IN)) {
+      
+    }
     
     switch(variable.mode) {
       case IN: 
