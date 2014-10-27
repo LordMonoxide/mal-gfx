@@ -2,7 +2,7 @@ package malachite.gfx;
 
 import java.util.Objects;
 
-import malachite.gfx.ShaderBuilder.VARIABLE_MODE;
+import malachite.gfx.ShaderBuilderGLSL12.VARIABLE_MODE;
 
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
@@ -28,7 +28,7 @@ public class WindowBuilder {
       logger.error("Error while building window", e); //$NON-NLS-1$
     }
     
-    Shader s = new ShaderBuilder(window.ctx.providers.shader.create())
+    Shader s = new ShaderBuilderGLSL12(window.ctx.providers.shader.create())
     .build();
   }
   

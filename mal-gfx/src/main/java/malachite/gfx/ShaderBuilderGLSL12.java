@@ -4,9 +4,10 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
+import malachite.gfx.interfaces.ShaderBuilder;
 import malachite.gfx.interfaces.ShaderLanguage;
 
-public class ShaderBuilder {
+public class ShaderBuilderGLSL12 implements ShaderBuilder {
   public final StageBuilder vsh = new StageBuilder(this);
   public final StageBuilder fsh = new StageBuilder(this);
   
@@ -14,21 +15,23 @@ public class ShaderBuilder {
   
   private final List<Variable> _variables = new ArrayList<>();
   
-  ShaderBuilder(ShaderLanguage language) {
+  ShaderBuilderGLSL12(ShaderLanguage language) {
     _language = language;
   }
   
-  /*public ShaderBuilder raw(String code) {
-    _code.append(code).append('\n');
-    return this;
-  }*/
-  
-  public ShaderBuilder variable(EnumSet<VARIABLE_MODE> mode, String type, String name) {
+  public ShaderBuilderGLSL12 variable(EnumSet<VARIABLE_MODE> mode, String type, String name) {
     _variables.add(new Variable(mode, type, name));
     return this;
   }
   
   public Shader build() {
+    StringBuilder vsh = new StringBuilder()
+      .append("#version 120\n")
+      .append("void main() {")
+        .append("gl_TexCoord[0] = gl_MultiTexCoord0;\n")
+        .append("gl_Position = gl_ProjectionMatrix * gl_ModelViewMatrix * gl_Vertex;\n")
+      .append('}');
+    
     vsh.init();
     fsh.init();
     
@@ -52,7 +55,7 @@ public class ShaderBuilder {
   }
   
   public class StageBuilder {
-    private final ShaderBuilder _sb;
+    private final ShaderBuilderGLSL12 _sb;
     
     private final List<Function> _functions = new ArrayList<>();
     
@@ -60,7 +63,7 @@ public class ShaderBuilder {
     
     private StringBuilder _code;
     
-    private StageBuilder(ShaderBuilder sb) {
+    private StageBuilder(ShaderBuilderGLSL12 sb) {
       _sb = sb;
     }
     

@@ -5,7 +5,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GLContext;
 
-import malachite.gfx.ShaderBuilder.VARIABLE_MODE;
+import malachite.gfx.ShaderBuilderGLSL12.VARIABLE_MODE;
 import malachite.gfx.interfaces.ShaderLanguage;
 
 public class ShaderLanguageGLSL15 implements ShaderLanguage {
@@ -26,11 +26,11 @@ public class ShaderLanguageGLSL15 implements ShaderLanguage {
     return version >= 150;
   }
   
-  @Override public void version(ShaderBuilder.StageBuilder builder) {
+  @Override public void version(ShaderBuilderGLSL12.StageBuilder builder) {
     builder.raw("#version 1.50"); //$NON-NLS-1$
   }
   
-  @Override public void variable(ShaderBuilder builder, ShaderBuilder.Variable variable) {
+  @Override public void variable(ShaderBuilderGLSL12 builder, ShaderBuilderGLSL12.Variable variable) {
     if(variable.mode.contains(VARIABLE_MODE.IN)) {
       builder.vsh.raw("in " + variable.type + " in_" + variable.name + ';'); //$NON-NLS-1$ //$NON-NLS-2$
     }
@@ -45,7 +45,7 @@ public class ShaderLanguageGLSL15 implements ShaderLanguage {
     }
   }
   
-  @Override public void function(ShaderBuilder.StageBuilder builder, ShaderBuilder.StageBuilder.Function function) {
+  @Override public void function(ShaderBuilderGLSL12.StageBuilder builder, ShaderBuilderGLSL12.StageBuilder.Function function) {
     StringBuilder ret = new StringBuilder()
        .append(function.type).append(' ')
        .append(function.name).append('(');
@@ -69,11 +69,11 @@ public class ShaderLanguageGLSL15 implements ShaderLanguage {
     builder.raw(ret.toString());
   }
   
-  @Override public void finalizeVSH(ShaderBuilder.StageBuilder builder) {
+  @Override public void finalizeVSH(ShaderBuilderGLSL12.StageBuilder builder) {
     
   }
 
-  @Override public void finalizeFSH(ShaderBuilder.StageBuilder builder) {
+  @Override public void finalizeFSH(ShaderBuilderGLSL12.StageBuilder builder) {
     
   }
 }
