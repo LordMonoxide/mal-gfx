@@ -1,13 +1,13 @@
 package mal.gfx;
 
-import static org.lwjgl.system.glfw.GLFW.*;
+import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.glfw.Callbacks.*;
 
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.system.glfw.ErrorCallback;
 
 public class WindowBuilder {
   static {
-    glfwSetErrorCallback(ErrorCallback.Util.getDefault());
+    glfwSetErrorCallback(errorfunPrint(System.err));
     
     if(glfwInit() != GL11.GL_TRUE) {
       throw new IllegalStateException("Unable to initialize GLFW");

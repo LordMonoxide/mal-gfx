@@ -7,7 +7,7 @@ import org.lwjgl.PointerBuffer;
 import org.lwjgl.opengl.GL11;
 
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.system.glfw.GLFW.*;
+import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
 public final class WindowEvents {

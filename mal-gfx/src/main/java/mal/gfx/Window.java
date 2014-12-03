@@ -1,13 +1,12 @@
 package mal.gfx;
 
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.system.glfw.GLFW.*;
+import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
 import java.nio.ByteBuffer;
 
-import org.lwjgl.system.glfw.GLFWvidmode;
-import org.lwjgl.system.glfw.WindowCallback;
+import org.lwjgl.glfw.*;
 
 public class Window {
   public final WindowEvents events = new WindowEvents();
@@ -52,61 +51,86 @@ public class Window {
   }
   
   private void addCallbacks() {
-    WindowCallback.set(_window, new WindowCallback() {
-      @Override public void windowPos(long window, int xpos, int ypos) {
+    glfwSetWindowPosCallback(_window, new GLFWwindowposfun() {
+      @Override public void invoke(long window, int xpos, int ypos) {
         events.onMove(xpos, ypos);
       }
-      
-      @Override public void windowSize(long window, int width, int height) {
+    });
+    
+    glfwSetWindowSizeCallback(_window, new GLFWwindowsizefun() {
+      @Override public void invoke(long window, int width, int height) {
         events.onResize(width, height);
       }
-      
-      @Override public void windowClose(long window) {
+    });
+    
+    glfwSetWindowCloseCallback(_window, new GLFWwindowclosefun() {
+      @Override public void invoke(long window) {
         events.onClose();
       }
-      
-      @Override public void windowRefresh(long window) {
+    });
+    
+    glfwSetWindowRefreshCallback(_window, new GLFWwindowrefreshfun() {
+      @Override public void invoke(long window) {
         events.onRefresh();
       }
-      
-      @Override public void windowFocus(long window, int focused) {
+    });
+    
+    glfwSetWindowFocusCallback(_window, new GLFWwindowfocusfun() {
+      @Override public void invoke(long window, int focused) {
         events.onFocus(focused);
       }
-      
-      @Override public void windowIconify(long window, int iconified) {
+    });
+    
+    glfwSetWindowIconifyCallback(_window, new GLFWwindowiconifyfun() {
+      @Override public void invoke(long window, int iconified) {
         events.onIconify(iconified);
       }
-      
-      @Override public void key(long window, int key, int scancode, int action, int mods) {
+    });
+    
+    glfwSetKeyCallback(_window, new GLFWkeyfun() {
+      @Override public void invoke(long window, int key, int scancode, int action, int mods) {
         events.onKeyPress(key, scancode, action, mods);
       }
-      
-      @Override public void character(long window, int codepoint) { }
-      @Override public void charMods(long window, int codepoint, int mods) {
+    });
+    
+    glfwSetCharModsCallback(_window, new GLFWcharmodsfun() {
+      @Override public void invoke(long window, int codepoint, int mods) {
         events.onCharacter(codepoint, mods);
       }
-      
-      @Override public void mouseButton(long window, int button, int action, int mods) {
+    });
+    
+    glfwSetMouseButtonCallback(_window, new GLFWmousebuttonfun() {
+      @Override public void invoke(long window, int button, int action, int mods) {
         events.onMouseButton(button, action, mods);
       }
-      
-      @Override public void cursorPos(long window, double xpos, double ypos) {
+    });
+    
+    glfwSetCursorPosCallback(_window, new GLFWcursorposfun() {
+      @Override public void invoke(long window, double xpos, double ypos) {
         events.onMouseMove(xpos, ypos);
       }
-      
-      @Override public void cursorEnter(long window, int entered) {
+    });
+    
+    glfwSetCursorEnterCallback(_window, new GLFWcursorenterfun() {
+      @Override public void invoke(long window, int entered) {
         events.onMouseHover(entered);
       }
-      
-      @Override public void scroll(long window, double xoffset, double yoffset) {
+    });
+    
+    glfwSetScrollCallback(_window, new GLFWscrollfun() {
+      @Override public void invoke(long window, double xoffset, double yoffset) {
         events.onMouseScroll(xoffset, yoffset);
       }
-      
-      @Override public void framebufferSize(long window, int width, int height) {
+    });
+    
+    glfwSetFramebufferSizeCallback(_window, new GLFWframebuffersizefun() {
+      @Override public void invoke(long window, int width, int height) {
         events.onBufferResize(width, height);
       }
-      
-      @Override public void drop(long window, int count, long names) {
+    });
+    
+    glfwSetDropCallback(_window, new GLFWdropfun() {
+      @Override public void invoke(long window, int count, long names) {
         events.onDrop(count, names);
       }
     });
