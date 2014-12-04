@@ -9,13 +9,15 @@ import java.nio.ByteBuffer;
 import org.lwjgl.glfw.*;
 
 public class Window {
-  public final WindowEvents events = new WindowEvents();
+  public final WindowEvents events;
   
   private Thread _thread;
   
   private long _window;
   
-  Window(int w, int h, String title, boolean visible, boolean resizable) {
+  Window(WindowEvents events, int w, int h, String title, boolean visible, boolean resizable) {
+    this.events = events;
+    
     _thread = new Thread(() -> {
       createWindow(w, h, title, visible, resizable);
       addCallbacks();
@@ -34,6 +36,10 @@ public class Window {
     _thread.start();
   }
   
+  long getWindow() {
+    return _window;
+  }
+  
   private void createWindow(int w, int h, String title, boolean visible, boolean resizable) {
     glfwWindowHint(GLFW_VISIBLE,   visible   ? GL_TRUE : GL_FALSE);
     glfwWindowHint(GLFW_RESIZABLE, resizable ? GL_TRUE : GL_FALSE);
@@ -48,6 +54,8 @@ public class Window {
     glfwSwapInterval(1);
     
     glfwShowWindow(_window);
+    
+    events.onCreate();
   }
   
   private void addCallbacks() {
@@ -141,5 +149,7 @@ public class Window {
       glfwSwapBuffers(_window);
       glfwPollEvents();
     }
+    
+    glfwDestroyWindow(_window);
   }
 }
