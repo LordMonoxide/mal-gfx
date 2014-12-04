@@ -146,6 +146,8 @@ public class Window {
   
   private void loop() {
     while(glfwWindowShouldClose(_window) == GL_FALSE) {
+      events.onLoop();
+      
       glfwSwapBuffers(_window);
       glfwPollEvents();
     }

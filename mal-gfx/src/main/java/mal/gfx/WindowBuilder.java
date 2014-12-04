@@ -24,6 +24,7 @@ public class WindowBuilder {
     class WC {
       Window window;
       Context context;
+      Drawable d;
     }
     
     WC wc = new WC();
@@ -32,7 +33,21 @@ public class WindowBuilder {
       .events(events -> {
         events.onCreate(() -> {
           wc.context = new ContextBuilder()
-          .window(wc.window).build();
+            .window(wc.window).build();
+          
+          wc.d = new DrawableVBO(
+            new float[] {
+              -0.5f,  0.5f, 0f,
+              -0.5f, -0.5f, 0f,
+               0.5f, -0.5f, 0f,
+               0.5f,  0.5f, 0f,
+            }, new byte[] {
+              0, 1, 2,
+              2, 3, 0
+            }
+          );
+        }).onLoop(() -> {
+          wc.d.draw();
         });
       }).title("Malachite").build();
   }

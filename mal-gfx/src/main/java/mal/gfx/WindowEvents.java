@@ -14,6 +14,8 @@ public final class WindowEvents {
   WindowEvents() { }
   
   private Deque<CreateEvent>       _create = new ConcurrentLinkedDeque<>();
+  private Deque<LoopEvent>         _loop = new ConcurrentLinkedDeque<>();
+  
   private Deque<MoveEvent>         _move = new ConcurrentLinkedDeque<>();
   private Deque<ResizeEvent>       _resize = new ConcurrentLinkedDeque<>();
   private Deque<CloseEvent>        _close = new ConcurrentLinkedDeque<>();
@@ -35,6 +37,8 @@ public final class WindowEvents {
   private Deque<DropEvent>         _drop = new ConcurrentLinkedDeque<>();
   
   public WindowEvents onCreate(CreateEvent e) { _create.add(e); return this; }
+  public WindowEvents onLoop(LoopEvent e) { _loop.add(e); return this; }
+  
   public WindowEvents onMove(MoveEvent e) { _move.add(e); return this; }
   public WindowEvents onResize(ResizeEvent e) { _resize.add(e); return this; }
   public WindowEvents onClose(CloseEvent e) { _close.add(e); return this; }
@@ -57,6 +61,10 @@ public final class WindowEvents {
   
   void onCreate() {
     for(CreateEvent e : _create) { e.run(); }
+  }
+  
+  void onLoop() {
+    for(LoopEvent e : _loop) { e.run(); }
   }
   
   void onMove(int x, int y) {
@@ -159,6 +167,8 @@ public final class WindowEvents {
   }
   
   public interface CreateEvent       { public void run(); }
+  public interface LoopEvent         { public void run(); }
+  
   public interface MoveEvent         { public void run(int x, int y); }
   public interface ResizeEvent       { public void run(int w, int h); }
   public interface CloseEvent        { public void run(); }
