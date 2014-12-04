@@ -3,27 +3,51 @@ package mal.gfx;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.glfw.Callbacks.*;
 
+import org.lwjgl.glfw.GLFWerrorfun;
 import org.lwjgl.opengl.GL11;
 
 public class WindowBuilder {
   static {
-    glfwSetErrorCallback(errorfunPrint(System.err));
+    GLFWerrorfun err = errorfunPrint(System.err);
+    glfwSetErrorCallback(err);
     
     if(glfwInit() != GL11.GL_TRUE) {
       throw new IllegalStateException("Unable to initialize GLFW");
     }
+    
+    Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+      err.release();
+    }));
   }
   
   public static void main(String[] args) {
-    Window window = new WindowBuilder()
-      .title("Malachite").build();
+    class WC {
+      Window window;
+      Context context;
+    }
+    
+    WC wc = new WC();
+    
+    wc.window = new WindowBuilder()
+      .events(events -> {
+        events.onCreate(() -> {
+          wc.context = new ContextBuilder()
+          .window(wc.window).build();
+        });
+      }).title("Malachite").build();
   }
   
+  private final WindowEvents _events = new WindowEvents();
   private int _w = 1280;
   private int _h =  720;
   private String _title = "Window";
   private boolean _visible = true;
   private boolean _resizable = false;
+  
+  public WindowBuilder events(WindowBuilderEventCallback callback) {
+    callback.run(_events);
+    return this;
+  }
   
   public WindowBuilder size(int w, int h) {
     _w = w;
@@ -47,6 +71,10 @@ public class WindowBuilder {
   }
   
   public Window build() {
-    return new Window(_w, _h, _title, _visible, _resizable);
+    return new Window(_events, _w, _h, _title, _visible, _resizable);
+  }
+  
+  public interface WindowBuilderEventCallback {
+    public void run(WindowEvents events);
   }
 }
