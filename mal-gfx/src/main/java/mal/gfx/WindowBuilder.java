@@ -17,6 +17,10 @@ public class WindowBuilder {
   public static void main(String[] args) {
     Window window = new WindowBuilder()
       .title("Malachite").build();
+    
+    window.events.onClose(() -> {
+      window.destroy();
+    });
   }
   
   private int _w = 1280;
