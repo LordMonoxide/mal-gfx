@@ -13,6 +13,9 @@ import static org.lwjgl.system.MemoryUtil.*;
 public final class WindowEvents {
   WindowEvents() { }
   
+  private Deque<CreateEvent>       _create = new ConcurrentLinkedDeque<>();
+  private Deque<LoopEvent>         _loop = new ConcurrentLinkedDeque<>();
+  
   private Deque<MoveEvent>         _move = new ConcurrentLinkedDeque<>();
   private Deque<ResizeEvent>       _resize = new ConcurrentLinkedDeque<>();
   private Deque<CloseEvent>        _close = new ConcurrentLinkedDeque<>();
@@ -33,25 +36,36 @@ public final class WindowEvents {
   private Deque<BufferResizeEvent> _bufferResize = new ConcurrentLinkedDeque<>();
   private Deque<DropEvent>         _drop = new ConcurrentLinkedDeque<>();
   
-  public void onMove(MoveEvent e) { _move.add(e); }
-  public void onResize(ResizeEvent e) { _resize.add(e); }
-  public void onClose(CloseEvent e) { _close.add(e); }
-  public void onRefresh(RefreshEvent e) { _refresh.add(e); }
-  public void onFocus(FocusEvent e) { _focus.add(e); }
-  public void onUnFocus(FocusEvent e) { _unfocus.add(e); }
-  public void onIconify(IconifyEvent e) { _iconify.add(e); }
-  public void onUniconify(IconifyEvent e) { _uniconify.add(e); }
-  public void onKeyDown(KeyDownEvent e) { _keyDown.add(e); }
-  public void onKeyUp(KeyUpEvent e) { _keyUp.add(e); }
-  public void onCharacter(CharacterEvent e) { _character.add(e); }
-  public void onMouseDown(MouseButtonEvent e) { _mouseDown.add(e); }
-  public void onMouseUp(MouseButtonEvent e) { _mouseUp.add(e); }
-  public void onMouseMove(MouseMoveEvent e) { _mouseMove.add(e); }
-  public void onMouseHoverIn(MouseHoverEvent e) { _mouseHoverIn.add(e); }
-  public void onMouseHoverOut(MouseHoverEvent e) { _mouseHoverOut.add(e); }
-  public void onMouseScroll(MouseScrollEvent e) { _mouseScroll.add(e); }
-  public void onBufferResize(BufferResizeEvent e) { _bufferResize.add(e); }
-  public void onDrop(DropEvent e) { _drop.add(e); }
+  public WindowEvents onCreate(CreateEvent e) { _create.add(e); return this; }
+  public WindowEvents onLoop(LoopEvent e) { _loop.add(e); return this; }
+  
+  public WindowEvents onMove(MoveEvent e) { _move.add(e); return this; }
+  public WindowEvents onResize(ResizeEvent e) { _resize.add(e); return this; }
+  public WindowEvents onClose(CloseEvent e) { _close.add(e); return this; }
+  public WindowEvents onRefresh(RefreshEvent e) { _refresh.add(e); return this; }
+  public WindowEvents onFocus(FocusEvent e) { _focus.add(e); return this; }
+  public WindowEvents onUnFocus(FocusEvent e) { _unfocus.add(e); return this; }
+  public WindowEvents onIconify(IconifyEvent e) { _iconify.add(e); return this; }
+  public WindowEvents onUniconify(IconifyEvent e) { _uniconify.add(e); return this; }
+  public WindowEvents onKeyDown(KeyDownEvent e) { _keyDown.add(e); return this; }
+  public WindowEvents onKeyUp(KeyUpEvent e) { _keyUp.add(e); return this; }
+  public WindowEvents onCharacter(CharacterEvent e) { _character.add(e); return this; }
+  public WindowEvents onMouseDown(MouseButtonEvent e) { _mouseDown.add(e); return this; }
+  public WindowEvents onMouseUp(MouseButtonEvent e) { _mouseUp.add(e); return this; }
+  public WindowEvents onMouseMove(MouseMoveEvent e) { _mouseMove.add(e); return this; }
+  public WindowEvents onMouseHoverIn(MouseHoverEvent e) { _mouseHoverIn.add(e); return this; }
+  public WindowEvents onMouseHoverOut(MouseHoverEvent e) { _mouseHoverOut.add(e); return this; }
+  public WindowEvents onMouseScroll(MouseScrollEvent e) { _mouseScroll.add(e); return this; }
+  public WindowEvents onBufferResize(BufferResizeEvent e) { _bufferResize.add(e); return this; }
+  public WindowEvents onDrop(DropEvent e) { _drop.add(e); return this; }
+  
+  void onCreate() {
+    for(CreateEvent e : _create) { e.run(); }
+  }
+  
+  void onLoop() {
+    for(LoopEvent e : _loop) { e.run(); }
+  }
   
   void onMove(int x, int y) {
     for(MoveEvent e : _move) { e.run(x, y); }
@@ -151,6 +165,9 @@ public final class WindowEvents {
     
     for(DropEvent e : _drop) { e.run(name); } 
   }
+  
+  public interface CreateEvent       { public void run(); }
+  public interface LoopEvent         { public void run(); }
   
   public interface MoveEvent         { public void run(int x, int y); }
   public interface ResizeEvent       { public void run(int w, int h); }
