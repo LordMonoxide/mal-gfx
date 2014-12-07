@@ -81,6 +81,10 @@ public class DrawableVBO extends Drawable {
   }
   
   @Override public void draw() {
+    if(getTexture() != null) {
+      getTexture().use();
+    }
+    
     GL30.glBindVertexArray(_vaID);
     GL20.glEnableVertexAttribArray(0);
     

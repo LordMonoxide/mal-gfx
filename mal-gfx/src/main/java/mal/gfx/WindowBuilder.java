@@ -35,6 +35,8 @@ public class WindowBuilder {
           wc.context = new ContextBuilder()
             .window(wc.window).build();
           
+          Texture t = wc.context.textures.getTexture("mal.png");
+          
           wc.d = new DrawableVBO(
             new float[] {
               -0.5f,  0.5f, 0f,
