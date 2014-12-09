@@ -20,44 +20,6 @@ public class WindowBuilder {
     }));
   }
   
-  public static void main(String[] args) {
-    class WC {
-      Window window;
-      Context context;
-      Drawable d;
-    }
-    
-    WC wc = new WC();
-    
-    wc.window = new WindowBuilder()
-      .events(events -> {
-        events.onCreate(() -> {
-          wc.context = new ContextBuilder()
-            .window(wc.window).build();
-          
-          Texture t = wc.context.textures.getTexture("mal.png");
-          
-          wc.d = new DrawableVBO(
-            new float[] {
-              -0.5f,  0.5f, 0f,
-              -0.5f, -0.5f, 0f,
-               0.5f, -0.5f, 0f,
-               0.5f,  0.5f, 0f,
-            }, new byte[] {
-              0, 1, 2,
-              2, 3, 0
-            }
-          );
-        }).onLoop(() -> {
-          wc.d.draw();
-        });
-      }).title("Malachite").build();
-    
-    wc.window.events.onClose(() -> {
-      wc.window.destroy();
-    });
-  }
-  
   private final WindowEvents _events = new WindowEvents();
   private int _w = 1280;
   private int _h =  720;

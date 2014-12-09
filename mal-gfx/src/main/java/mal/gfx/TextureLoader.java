@@ -22,7 +22,7 @@ public class TextureLoader {
       return _textures.get(name);
     }
     
-    Texture texture = new Texture(w, h, data);
+    Texture texture = new StandardTexture(w, h, data);
     _textures.put(name, texture);
     
     return texture;
@@ -52,14 +52,14 @@ public class TextureLoader {
       }
     } catch(FileNotFoundException e) {
       System.err.println("Couldn't find texture \"" + file + '\"'); //$NON-NLS-1$
-      return null;
+      return new TextureNotFound();
     } catch(IOException e) {
       System.err.println("Error loading texture \"" + file + '\"'); //$NON-NLS-1$
       e.printStackTrace();
-      return null;
+      return new TextureNotFound();
     }
     
-    Texture texture = new Texture(w, h, data);
+    StandardTexture texture = new StandardTexture(w, h, data);
     _textures.put(file, texture);
     
     return texture;

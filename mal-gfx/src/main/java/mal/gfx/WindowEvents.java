@@ -65,6 +65,11 @@ public final class WindowEvents {
   
   void onLoop() {
     for(LoopEvent e : _loop) { e.run(); }
+    
+    CreateEvent e;
+    while((e = _create.poll()) != null) {
+      e.run();
+    }
   }
   
   void onMove(int x, int y) {

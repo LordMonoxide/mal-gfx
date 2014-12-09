@@ -6,7 +6,9 @@ import static org.lwjgl.system.MemoryUtil.*;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 import org.lwjgl.glfw.*;
 import org.lwjgl.system.libffi.Closure;
@@ -18,7 +20,7 @@ public class Window {
   
   long _window;
   
-  private List<Closure> _callbacks = new ArrayList<Closure>();
+  private List<Closure> _callbacks = new ArrayList<>();
   
   Window(WindowEvents events, int w, int h, String title, boolean visible, boolean resizable) {
     this.events = events;
