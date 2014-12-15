@@ -3,6 +3,10 @@ package mal.gfx;
 import mal.gfx.vbo.TexturedDrawableVBO;
 
 public class Test {
+  public static void main(String[] args) {
+    new Test();
+  }
+  
   private Window _window;
   private Context _context;
   private TexturedDrawable _drawable;
