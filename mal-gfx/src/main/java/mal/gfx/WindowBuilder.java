@@ -3,12 +3,12 @@ package mal.gfx;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.glfw.Callbacks.*;
 
-import org.lwjgl.glfw.GLFWerrorfun;
+import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL11;
 
 public class WindowBuilder {
   static {
-    GLFWerrorfun err = errorfunPrint(System.err);
+    GLFWErrorCallback err = errorCallbackPrint(System.err);
     glfwSetErrorCallback(err);
     
     if(glfwInit() != GL11.GL_TRUE) {
