@@ -7,7 +7,6 @@ import mal.gfx.Buffers;
 import mal.gfx.Texture;
 import mal.gfx.TexturedDrawable;
 
-import org.eclipse.jdt.annotation.Nullable;
 import org.lwjgl.opengl.ContextCapabilities;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
@@ -57,7 +56,7 @@ public class TexturedDrawableVBO extends TexturedDrawable {
     updateVBO(verticesBuffer, indicesBuffer);
   }
   
-  private void updateVBO(FloatBuffer vertices, @Nullable ByteBuffer indices) {
+  private void updateVBO(FloatBuffer vertices, ByteBuffer indices) {
     _vertices = vertices.remaining();
     
     _va.bind(() -> {

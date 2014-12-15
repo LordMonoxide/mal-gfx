@@ -39,6 +39,5 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/PNGDecoder.jar"/>
-	<classpathentry kind="lib" path="org.eclipse.jdt.annotation_2.0.100.N20141126-2000.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
