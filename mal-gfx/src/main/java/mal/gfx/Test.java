@@ -1,7 +1,6 @@
 package mal.gfx;
 
 import mal.gfx.shaders.Shader;
-import mal.gfx.shaders.ShaderBuilder;
 import mal.gfx.vbo.TexturedDrawableVBO;
 
 public class Test {
@@ -28,22 +27,23 @@ public class Test {
       
       _drawable = new TexturedDrawableVBO(
         new float[] {
-          -0.5f,  0.5f, 0f, 0f, 0f,
-          -0.5f, -0.5f, 0f, 0f, 1f,
-           0.5f, -0.5f, 0f, 1f, 1f,
-           0.5f,  0.5f, 0f, 1f, 0f
+          0, 0, 0, 0, 0,
+          0, 512, 0, 0, 1,
+          512, 512, 0, 1, 1,
+          512, 0, 0, 1, 0
         }, new byte[] {
           0, 1, 2,
           2, 3, 0
         }, t
       );
       
-      ShaderBuilder s = new ShaderBuilder();
-      _shader = s.build();
+      _shader = _context.shaders.create().build();
     }).onClose(() -> {
       _window.destroy();
     }).onLoop(() -> {
       _context.clear();
+      _shader.proj.set(_context.matrices.getProjection());
+      _shader.view.set(_context.matrices.getView());
       _shader.use();
       _drawable.draw();
     });

@@ -4,14 +4,23 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 
 public class ShaderBuilder {
+  private final ShaderManager _manager;
+  
   private final ShaderStage _vsh = new ShaderStage();
   private final ShaderStage _fsh = new ShaderStage();
   
-  public ShaderBuilder() {
-    _vsh.addVariable("attribute vec2", "tex");
+  public ShaderBuilder(ShaderManager manager) {
+    _manager = manager;
+    
+    _vsh
+      .addVariable("uniform mat4", "in_proj")
+      .addVariable("uniform mat4", "in_view")
+      .addVariable("uniform mat4", "in_model")
+      .addVariable("attribute vec2", "tex");
+    
     _vsh._main
       .addLine("gl_TexCoord[0] = vec4(tex, 0, 0);")
-      .addLine("gl_Position = gl_ProjectionMatrix * gl_ModelViewMatrix * gl_Vertex;");
+      .addLine("gl_Position = in_proj * in_view * gl_Vertex;");
     
     _fsh.addVariable("uniform sampler2D", "texture");
     _fsh._main.addLine("gl_FragColor = texture2D(texture, gl_TexCoord[0].st);");
@@ -25,7 +34,7 @@ public class ShaderBuilder {
     int fID = createShader(GL20.GL_FRAGMENT_SHADER, fsh);
     int pID = linkShader(vID, fID);
     
-    return new Shader(pID);
+    return new Shader(pID, _manager);
   }
   
   private int createShader(int type, String source) {
