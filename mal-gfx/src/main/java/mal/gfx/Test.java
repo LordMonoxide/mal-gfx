@@ -24,10 +24,10 @@ public class Test {
       
       _drawable = new TexturedDrawableVBO(
         new float[] {
-          -0.5f,  0.5f, 0f,
-          -0.5f, -0.5f, 0f,
-           0.5f, -0.5f, 0f,
-           0.5f,  0.5f, 0f,
+          -0.5f,  0.5f, 0f, 0f, 0f,
+          -0.5f, -0.5f, 0f, 0f, 1f,
+           0.5f, -0.5f, 0f, 1f, 1f,
+           0.5f,  0.5f, 0f, 1f, 0f
         }, new byte[] {
           0, 1, 2,
           2, 3, 0

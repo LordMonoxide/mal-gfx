@@ -12,15 +12,16 @@ public class ShaderBuilder {
   }
   
   public Shader build() {
+    _vsh.addVariable("attribute vec2", "tex");
     _vsh._main
-      .addLine("gl_TexCoord[0] = gl_MultiTexCoord0;")
+      .addLine("gl_TexCoord[0] = vec4(tex, 0, 0);")
       .addLine("gl_Position = gl_ProjectionMatrix * gl_ModelViewMatrix * gl_Vertex;");
     
     _fsh._main.addLine("gl_FragColor = texture2D(texture, gl_TexCoord[0].st);");
     
     String vsh = _vsh.build();
     String fsh = _fsh.build();
-
+    
     int vID = createShader(GL20.GL_VERTEX_SHADER, vsh);
     int fID = createShader(GL20.GL_FRAGMENT_SHADER, fsh);
     int pID = linkShader(vID, fID);
@@ -48,6 +49,7 @@ public class ShaderBuilder {
     
     GL20.glAttachShader(id, vID);
     GL20.glAttachShader(id, fID);
+    GL20.glBindAttribLocation(id, 1, "tex");
     GL20.glLinkProgram(id);
     
     if(GL20.glGetProgrami(id, GL20.GL_LINK_STATUS) == GL11.GL_FALSE) {
