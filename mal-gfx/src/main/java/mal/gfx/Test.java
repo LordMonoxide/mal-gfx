@@ -18,7 +18,11 @@ public class Test {
     _window = new WindowBuilder().title("Malachite").build();
     
     _window.events.onCreate(() -> {
-      _context = new ContextBuilder(_window).build();
+      _context = new ContextBuilder()
+        .forWindow(_window)
+        .withAlpha()
+        .withDepth()
+        .build();
       
       Texture t = _context.textures.getTexture("mal.png");
       
@@ -39,6 +43,7 @@ public class Test {
     }).onClose(() -> {
       _window.destroy();
     }).onLoop(() -> {
+      _context.clear();
       _shader.use();
       _drawable.draw();
     });
