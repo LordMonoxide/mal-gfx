@@ -65,8 +65,6 @@ public class Window {
     glfwSwapInterval(1);
     
     glfwShowWindow(_window);
-    
-    events.onCreate();
   }
   
   private void addCallbacks() {

@@ -59,17 +59,15 @@ public final class WindowEvents {
   public WindowEvents onBufferResize(BufferResizeEvent e) { _bufferResize.add(e); return this; }
   public WindowEvents onDrop(DropEvent e) { _drop.add(e); return this; }
   
-  void onCreate() {
-    for(CreateEvent e : _create) { e.run(); }
-  }
-  
   void onLoop() {
-    for(LoopEvent e : _loop) { e.run(); }
-    
-    CreateEvent e;
-    while((e = _create.poll()) != null) {
-      e.run();
+    if(_create.size() != 0) {
+      CreateEvent e;
+      while((e = _create.poll()) != null) {
+        e.run();
+      }
     }
+    
+    for(LoopEvent e : _loop) { e.run(); }
   }
   
   void onMove(int x, int y) {
