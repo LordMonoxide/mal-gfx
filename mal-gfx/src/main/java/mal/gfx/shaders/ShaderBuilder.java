@@ -8,17 +8,16 @@ public class ShaderBuilder {
   private final ShaderStage _fsh = new ShaderStage();
   
   public ShaderBuilder() {
-    _fsh.addVariable("uniform sampler2D", "texture");
-  }
-  
-  public Shader build() {
     _vsh.addVariable("attribute vec2", "tex");
     _vsh._main
       .addLine("gl_TexCoord[0] = vec4(tex, 0, 0);")
       .addLine("gl_Position = gl_ProjectionMatrix * gl_ModelViewMatrix * gl_Vertex;");
     
+    _fsh.addVariable("uniform sampler2D", "texture");
     _fsh._main.addLine("gl_FragColor = texture2D(texture, gl_TexCoord[0].st);");
-    
+  }
+  
+  public Shader build() {
     String vsh = _vsh.build();
     String fsh = _fsh.build();
     
