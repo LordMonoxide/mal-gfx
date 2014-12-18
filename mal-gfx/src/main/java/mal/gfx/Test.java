@@ -1,5 +1,7 @@
 package mal.gfx;
 
+import mal.gfx.shaders.Shader;
+import mal.gfx.shaders.ShaderBuilder;
 import mal.gfx.vbo.TexturedDrawableVBO;
 
 public class Test {
@@ -10,6 +12,7 @@ public class Test {
   private Window _window;
   private Context _context;
   private TexturedDrawable _drawable;
+  private Shader _shader;
   
   public Test() {
     _window = new WindowBuilder().title("Malachite").build();
@@ -30,9 +33,13 @@ public class Test {
           2, 3, 0
         }, t
       );
+      
+      ShaderBuilder s = new ShaderBuilder();
+      _shader = s.build();
     }).onClose(() -> {
       _window.destroy();
     }).onLoop(() -> {
+      _shader.use();
       _drawable.draw();
     });
   }
