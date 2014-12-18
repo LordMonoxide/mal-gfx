@@ -5,6 +5,7 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
 import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +16,7 @@ public class Window {
   public final WindowEvents events;
   
   private Thread _thread;
+  private int _w, _h;
   
   long _window;
   
@@ -22,6 +24,9 @@ public class Window {
   
   Window(WindowEvents events, int w, int h, String title, boolean visible, boolean resizable) {
     this.events = events;
+    
+    _w = w;
+    _h = h;
     
     _thread = new Thread(() -> {
       createWindow(w, h, title, visible, resizable);
@@ -76,6 +81,8 @@ public class Window {
     
     glfwSetWindowSizeCallback(_window, addCallback(new GLFWWindowSizeCallback() {
       @Override public void invoke(long window, int width, int height) {
+        _w = width;
+        _h = height;
         events.onResize(width, height);
       }
     }));
@@ -156,6 +163,14 @@ public class Window {
   private <T extends Closure> T addCallback(T callback) {
     _callbacks.add(callback);
     return callback;
+  }
+  
+  public int getW() {
+    return _w;
+  }
+  
+  public int getH() {
+    return _h;
   }
   
   private void loop() {
