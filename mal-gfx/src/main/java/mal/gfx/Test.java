@@ -42,8 +42,8 @@ public class Test {
       _window.destroy();
     }).onLoop(() -> {
       _context.clear();
-      _shader.proj.set(_context.matrices.getProjection());
-      _shader.view.set(_context.matrices.getView());
+      _shader.proj.set(_context.matrices.getProjectionBuffer());
+      _shader.view.set(_context.matrices.getViewBuffer());
       _shader.use();
       _drawable.draw();
     });

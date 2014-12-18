@@ -1,5 +1,6 @@
 package mal.gfx;
 
+import java.nio.FloatBuffer;
 import java.util.Stack;
 
 import org.lwjgl.util.vector.Matrix4f;
@@ -33,12 +34,30 @@ public class MatrixStack {
   private Matrix4f _proj;
   private Matrix4f _top;
   
+  private FloatBuffer _projBuffer;
+  private FloatBuffer _viewBuffer;
+  private boolean _viewUpdated = true;
+  
   public MatrixStack() {
     _top = identity();
   }
   
   public void setProjection(Matrix4f projection) {
     _proj = projection;
+    _projBuffer = Buffers.of(_proj);
+  }
+  
+  public FloatBuffer getProjectionBuffer() {
+    return _projBuffer;
+  }
+  
+  public FloatBuffer getViewBuffer() {
+    if(_viewUpdated) {
+      _viewBuffer = Buffers.of(_top);
+      _viewUpdated = false;
+    }
+    
+    return _viewBuffer;
   }
   
   public Matrix4f getProjection() {
@@ -51,9 +70,11 @@ public class MatrixStack {
   
   public void translate(float x, float y) {
     _top.translate(new Vector2f(x, y));
+    _viewUpdated = true;
   }
   
   public void translate(float x, float y, float z) {
     _top.translate(new Vector3f(x, y, z));
+    _viewUpdated = true;
   }
 }
