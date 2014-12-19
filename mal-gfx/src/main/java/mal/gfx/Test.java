@@ -1,5 +1,7 @@
 package mal.gfx;
 
+import org.lwjgl.util.vector.Vector3f;
+
 import mal.gfx.shaders.Shader;
 import mal.gfx.vbo.TexturedDrawableVBO;
 
@@ -23,14 +25,14 @@ public class Test {
         .withDepth()
         .build();
       
-      Texture t = _context.textures.getTexture("box.png");
+      Texture t = _context.textures.getTexture("mal.png");
       
       _drawable = new TexturedDrawableVBO(
         new float[] {
-           0,  0, -1, 0, 0,
-           0, 32, -1, 0, 1,
-          32, 32, -1, 1, 1,
-          32,  0, -1, 1, 0
+          -256f, -256f, 0, 0, 0,
+          -256f,  256f, 0, 0, 1,
+           256f,  256f, 0, 1, 1,
+           256f, -256f, 0, 1, 0
         }, new byte[] {
           0, 1, 2,
           2, 3, 0
@@ -43,7 +45,8 @@ public class Test {
     }).onLoop(() -> {
       _context.clear();
       _shader.proj.set(_context.matrices.getProjectionBuffer());
-      _shader.view.set(_context.matrices.getViewBuffer());
+      //_shader.view.set(_context.matrices.getViewBuffer());
+      _shader.view.set(Buffers.of(MatrixStack.lookAt(new Vector3f(0, 0, 100), new Vector3f(0, 0, 0), new Vector3f(0, 1, 0))));
       _shader.use();
       _drawable.draw();
     });

@@ -29,7 +29,8 @@ public class Context {
     
     GL11.glViewport(0, 0, w, h);
     
-    matrices.setProjection(MatrixStack.symmetricPerspective(w / 2, h / 2, 1, 1000));
+    matrices.setProjection(MatrixStack.symmetricPerspective(w / 2f / 100f, h / 2f / 100f, 0, 1000));
+    //matrices.setProjection(MatrixStack.perspectiveFOV((float)(Math.PI / 4), (float)w / (float)h, 0f, 1000.0f));
   }
   
   public void clear() {

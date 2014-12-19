@@ -43,11 +43,27 @@ public class MatrixStack {
   
   public static Matrix4f symmetricPerspective(float w, float h, float n, float f) {
     Matrix4f mat = new Matrix4f();
-    mat.m00 = n / w;
-    mat.m11 = n / h;
+    mat.m00 = 1 / w;
+    mat.m11 = -1 / h;
     mat.m22 = -(f + n) / (f - n);
     mat.m32 = -2 * f * n / (f - n);
     mat.m23 = -1;
+    System.out.println(mat.m00);
+    System.out.println(mat.m11);
+    System.out.println(mat.m22);
+    System.out.println(mat.m32);
+    return mat;
+  }
+  
+  public static Matrix4f perspectiveFOV(float fov, float aspect, float n, float f) {
+    float tanHalfFov = (float)Math.tan(fov / 2);
+    
+    Matrix4f mat = new Matrix4f();
+    mat.m00 = 1 / (aspect * tanHalfFov);
+    mat.m11 = 1 / (tanHalfFov);
+    mat.m22 = -(f + n) / (f - n);
+    mat.m23 = -1;
+    mat.m32 = -(2 * f * n) / (f - n);
     System.out.println(mat.m00);
     System.out.println(mat.m11);
     System.out.println(mat.m22);
