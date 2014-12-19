@@ -23,14 +23,14 @@ public class Test {
         .withDepth()
         .build();
       
-      Texture t = _context.textures.getTexture("mal.png");
+      Texture t = _context.textures.getTexture("box.png");
       
       _drawable = new TexturedDrawableVBO(
         new float[] {
-          -0.5f, -0.5f, 0, 0, 0,
-          -0.5f,  0.5f, 0, 0, 1,
-           0.5f,  0.5f, 0, 1, 1,
-           0.5f, -0.5f, 0, 1, 0
+           0,  0, -1, 0, 0,
+           0, 32, -1, 0, 1,
+          32, 32, -1, 1, 1,
+          32,  0, -1, 1, 0
         }, new byte[] {
           0, 1, 2,
           2, 3, 0

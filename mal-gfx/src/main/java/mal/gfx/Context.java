@@ -29,10 +29,7 @@ public class Context {
     
     GL11.glViewport(0, 0, w, h);
     
-    float w2 = (float)w / (float)h / 2f;
-    float h2 = 0.5f;
-    
-    matrices.setProjection(MatrixStack.ortho(-w2, w2, -h2, h2, -100, 100));
+    matrices.setProjection(MatrixStack.symmetricPerspective(w / 2, h / 2, 1, 1000));
   }
   
   public void clear() {

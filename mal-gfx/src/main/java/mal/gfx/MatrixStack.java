@@ -41,6 +41,20 @@ public class MatrixStack {
     return mat;
   }
   
+  public static Matrix4f symmetricPerspective(float w, float h, float n, float f) {
+    Matrix4f mat = new Matrix4f();
+    mat.m00 = n / w;
+    mat.m11 = n / h;
+    mat.m22 = -(f + n) / (f - n);
+    mat.m32 = -2 * f * n / (f - n);
+    mat.m23 = -1;
+    System.out.println(mat.m00);
+    System.out.println(mat.m11);
+    System.out.println(mat.m22);
+    System.out.println(mat.m32);
+    return mat;
+  }
+  
   public static Matrix4f lookAt(Vector3f eye, Vector3f center, Vector3f up) {
     Vector3f f = new Vector3f();
     Vector3f u = new Vector3f();
