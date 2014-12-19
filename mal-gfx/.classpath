@@ -39,6 +39,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/PNGDecoder.jar"/>
-	<classpathentry kind="lib" path="lib/lwjgl_util.jar"/>
+	<classpathentry kind="lib" path="lib/lwjgl_util.jar" sourcepath="lib/lwjgl-source-2.9.1.zip"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
