@@ -29,6 +29,47 @@ public class MatrixStack {
     return mat;
   }
   
+  public static Matrix4f perspective(float l, float r, float t, float b, float n, float f) {
+    Matrix4f mat = new Matrix4f();
+    mat.m00 = 2 * n / (r - l);
+    mat.m11 = 2 * n / (t - b);
+    mat.m22 = -(f + n) / (f - n);
+    mat.m20 = (r + l) / (r - l);
+    mat.m21 = (t + b) / (t - b);
+    mat.m32 = -2 * f * n / (f - n);
+    mat.m23 = -1;
+    return mat;
+  }
+  
+  public static Matrix4f lookAt(Vector3f eye, Vector3f center, Vector3f up) {
+    Vector3f f = new Vector3f();
+    Vector3f u = new Vector3f();
+    Vector3f s = new Vector3f();
+    
+    Vector3f.sub(center, eye, f);
+    f.normalise(f);
+    
+    up.normalise(u);
+    
+    Vector3f.cross(f, u, s);
+    s.normalise(s);
+    
+    Vector3f.cross(s, f, u);
+    
+    Matrix4f result = new Matrix4f();
+    result.m00 =  s.x;
+    result.m10 =  s.y;
+    result.m20 =  s.z;
+    result.m01 =  u.x;
+    result.m11 =  u.y;
+    result.m21 =  u.z;
+    result.m02 = -f.x;
+    result.m12 = -f.y;
+    result.m22 = -f.z;
+    
+    return result.translate(new Vector3f(-eye.x, -eye.y, -eye.z));
+  }
+  
   private final Stack<Matrix4f> _stack = new Stack<>();
   
   private Matrix4f _proj;
