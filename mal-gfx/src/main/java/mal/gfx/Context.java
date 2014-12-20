@@ -13,7 +13,7 @@ public class Context {
   public final Camera camera = new Camera();
   
   public final TextureLoader textures = new TextureLoader();
-  public final ShaderManager shaders = new ShaderManager();
+  public final ShaderManager shaders = new ShaderManager(this);
   public final MatrixStack   matrices = new MatrixStack();
   
   private int _clear_mode = GL11.GL_COLOR_BUFFER_BIT;

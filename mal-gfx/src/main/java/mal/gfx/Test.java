@@ -45,8 +45,6 @@ public class Test {
       _window.destroy();
     }).onLoop(() -> {
       _context.clear();
-      _shader.proj.set(_context.camera.projBuffer);
-      _shader.view.set(_context.camera.viewBuffer);
       _shader.use();
       _drawable.draw();
     });
