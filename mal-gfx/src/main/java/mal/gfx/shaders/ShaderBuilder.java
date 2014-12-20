@@ -20,7 +20,7 @@ public class ShaderBuilder {
     
     _vsh._main
       .addLine("gl_TexCoord[0] = vec4(tex, 0, 0);")
-      .addLine("gl_Position = in_proj * in_view * gl_Vertex;");
+      .addLine("gl_Position = in_proj * in_view * in_model * gl_Vertex;");
     
     _fsh.addVariable("uniform sampler2D", "texture");
     _fsh._main.addLine("gl_FragColor = texture2D(texture, gl_TexCoord[0].st);");
