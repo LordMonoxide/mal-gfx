@@ -1,6 +1,5 @@
 package mal.gfx.shaders;
 
-import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 
 public class Shader {
