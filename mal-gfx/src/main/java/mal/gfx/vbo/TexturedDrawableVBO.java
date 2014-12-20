@@ -4,8 +4,8 @@ import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 
 import mal.gfx.Buffers;
-import mal.gfx.Texture;
 import mal.gfx.TexturedDrawable;
+import mal.gfx.textures.Texture;
 
 import org.lwjgl.opengl.ContextCapabilities;
 import org.lwjgl.opengl.GL11;

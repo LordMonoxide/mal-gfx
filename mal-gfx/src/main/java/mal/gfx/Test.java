@@ -45,9 +45,8 @@ public class Test {
       _window.destroy();
     }).onLoop(() -> {
       _context.clear();
-      _shader.proj.set(_context.matrices.getProjectionBuffer());
-      //_shader.view.set(_context.matrices.getViewBuffer());
-      _shader.view.set(Buffers.of(MatrixStack.lookAt(new Vector3f(0, 0, 100), new Vector3f(0, 0, 0), new Vector3f(0, 1, 0))));
+      _shader.proj.set(_context.camera.projBuffer);
+      _shader.view.set(_context.camera.viewBuffer);
       _shader.use();
       _drawable.draw();
     });

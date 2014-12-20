@@ -102,24 +102,13 @@ public class MatrixStack {
   
   private final Stack<Matrix4f> _stack = new Stack<>();
   
-  private Matrix4f _proj;
   private Matrix4f _top;
   
-  private FloatBuffer _projBuffer;
   private FloatBuffer _viewBuffer;
   private boolean _viewUpdated = true;
   
   public MatrixStack() {
     _top = identity();
-  }
-  
-  public void setProjection(Matrix4f projection) {
-    _proj = projection;
-    _projBuffer = Buffers.of(_proj);
-  }
-  
-  public FloatBuffer getProjectionBuffer() {
-    return _projBuffer;
   }
   
   public FloatBuffer getViewBuffer() {
@@ -129,10 +118,6 @@ public class MatrixStack {
     }
     
     return _viewBuffer;
-  }
-  
-  public Matrix4f getProjection() {
-    return _proj;
   }
   
   public Matrix4f getView() {
