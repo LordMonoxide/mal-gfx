@@ -1,7 +1,5 @@
 package mal.gfx;
 
-import org.lwjgl.util.vector.Vector3f;
-
 import mal.gfx.shaders.Shader;
 import mal.gfx.textures.Texture;
 import mal.gfx.vbo.TexturedDrawableVBO;
@@ -28,6 +26,8 @@ public class Test {
       
       Texture t = _context.textures.getTexture("mal.png");
       
+      _shader = _context.shaders.create().build();
+      
       _drawable = new TexturedDrawableVBO(
         new float[] {
           -256f, -256f, 0, 0, 0,
@@ -37,15 +37,14 @@ public class Test {
         }, new byte[] {
           0, 1, 2,
           2, 3, 0
-        }, t
+        }, _context.matrices, t, _shader
       );
       
-      _shader = _context.shaders.create().build();
+      _drawable.pos.translate(-200, 0, 0);
     }).onClose(() -> {
       _window.destroy();
     }).onLoop(() -> {
       _context.clear();
-      _shader.use();
       _drawable.draw();
     });
   }

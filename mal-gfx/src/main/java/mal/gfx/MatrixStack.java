@@ -3,8 +3,8 @@ package mal.gfx;
 import java.nio.FloatBuffer;
 import java.util.Stack;
 
+import org.lwjgl.BufferUtils;
 import org.lwjgl.util.vector.Matrix4f;
-import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
 public class MatrixStack {
@@ -104,33 +104,40 @@ public class MatrixStack {
   
   private Matrix4f _top;
   
-  private FloatBuffer _viewBuffer;
-  private boolean _viewUpdated = true;
+  private final FloatBuffer _worldBuffer = BufferUtils.createFloatBuffer(16);
+  private boolean _worldUpdated = true;
   
   public MatrixStack() {
     _top = identity();
   }
   
-  public FloatBuffer getViewBuffer() {
-    if(_viewUpdated) {
-      _viewBuffer = Buffers.of(_top);
-      _viewUpdated = false;
+  public FloatBuffer getWorldBuffer() {
+    if(_worldUpdated) {
+      _top.store(_worldBuffer);
+      _worldBuffer.flip();
+      _worldUpdated = false;
     }
     
-    return _viewBuffer;
+    return _worldBuffer;
   }
   
-  public Matrix4f getView() {
-    return _top;
+  public void push() {
+    _stack.push(_top);
+    _top = new Matrix4f(_top);
   }
   
-  public void translate(float x, float y) {
-    _top.translate(new Vector2f(x, y));
-    _viewUpdated = true;
+  public void pop() {
+    _top = _stack.pop();
   }
   
-  public void translate(float x, float y, float z) {
-    _top.translate(new Vector3f(x, y, z));
-    _viewUpdated = true;
+  public void push(Runnable r) {
+    push();
+    r.run();
+    pop();
+  }
+  
+  public void translate(Vector3f vec) {
+    _top.translate(vec);
+    _worldUpdated = true;
   }
 }

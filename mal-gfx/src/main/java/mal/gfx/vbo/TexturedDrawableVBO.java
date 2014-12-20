@@ -4,7 +4,9 @@ import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 
 import mal.gfx.Buffers;
+import mal.gfx.MatrixStack;
 import mal.gfx.TexturedDrawable;
+import mal.gfx.shaders.Shader;
 import mal.gfx.textures.Texture;
 
 import org.lwjgl.opengl.ContextCapabilities;
@@ -33,8 +35,8 @@ public class TexturedDrawableVBO extends TexturedDrawable {
   private int _vertices;
   private int _indices;
   
-  public TexturedDrawableVBO(float[] vertices, Texture texture) {
-    super(vertices, texture);
+  public TexturedDrawableVBO(float[] vertices, MatrixStack matrices, Texture texture, Shader shader) {
+    super(vertices, matrices, texture, shader);
     
     _va = VBO.createVertexArray();
     _vb = VBO.createVertexBuffer();
@@ -44,8 +46,8 @@ public class TexturedDrawableVBO extends TexturedDrawable {
     updateVBO(verticesBuffer, null);
   }
   
-  public TexturedDrawableVBO(float[] vertices, byte[] indices, Texture texture) {
-    super(vertices, indices, texture);
+  public TexturedDrawableVBO(float[] vertices, byte[] indices, MatrixStack matrices, Texture texture, Shader shader) {
+    super(vertices, indices, matrices, texture, shader);
     
     _va = VBO.createVertexArray();
     _vb = VBO.createVertexBuffer();
@@ -83,22 +85,28 @@ public class TexturedDrawableVBO extends TexturedDrawable {
   }
   
   @Override public void draw() {
-    getTexture().use();
-    
-    _va.bind(() -> {
-      GL20.glEnableVertexAttribArray(0);
-      GL20.glEnableVertexAttribArray(1);
+    _matrices.push(() -> {
+      _matrices.translate(pos);
       
-      if(_indices != 0) {
-        _ib.bind(() -> {
-          GL11.glDrawElements(GL11.GL_TRIANGLES, _indices, GL11.GL_UNSIGNED_BYTE, 0);
-        });
-      } else {
-        GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, _vertices);
-      }
+      _shader.model.set(_matrices.getWorldBuffer());
+      _shader.use();
+      _texture.use();
       
-      GL20.glDisableVertexAttribArray(1);
-      GL20.glDisableVertexAttribArray(0);
+      _va.bind(() -> {
+        GL20.glEnableVertexAttribArray(0);
+        GL20.glEnableVertexAttribArray(1);
+        
+        if(_indices != 0) {
+          _ib.bind(() -> {
+            GL11.glDrawElements(GL11.GL_TRIANGLES, _indices, GL11.GL_UNSIGNED_BYTE, 0);
+          });
+        } else {
+          GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, _vertices);
+        }
+        
+        GL20.glDisableVertexAttribArray(1);
+        GL20.glDisableVertexAttribArray(0);
+      });
     });
   }
 }
