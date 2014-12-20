@@ -25,7 +25,7 @@ public class Context {
     
     if(depth) {
       GL11.glEnable(GL11.GL_DEPTH_TEST);
-      _clear_mode |=  GL11.GL_DEPTH_BUFFER_BIT;
+      _clear_mode |= GL11.GL_DEPTH_BUFFER_BIT;
     }
     
     GL11.glViewport(0, 0, w, h);
