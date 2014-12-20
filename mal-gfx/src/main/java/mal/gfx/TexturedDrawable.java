@@ -1,5 +1,7 @@
 package mal.gfx;
 
+import mal.gfx.textures.Texture;
+
 public abstract class TexturedDrawable {
   private Texture _texture;
   

@@ -1,6 +1,7 @@
 package mal.gfx;
 
 import mal.gfx.shaders.ShaderManager;
+import mal.gfx.textures.TextureLoader;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GLContext;

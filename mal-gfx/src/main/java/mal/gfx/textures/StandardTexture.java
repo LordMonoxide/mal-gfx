@@ -1,4 +1,4 @@
-package mal.gfx;
+package mal.gfx.textures;
 
 import java.nio.ByteBuffer;
 

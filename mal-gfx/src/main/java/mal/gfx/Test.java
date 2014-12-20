@@ -3,6 +3,7 @@ package mal.gfx;
 import org.lwjgl.util.vector.Vector3f;
 
 import mal.gfx.shaders.Shader;
+import mal.gfx.textures.Texture;
 import mal.gfx.vbo.TexturedDrawableVBO;
 
 public class Test {
