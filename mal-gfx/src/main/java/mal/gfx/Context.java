@@ -31,6 +31,7 @@ public class Context {
       _clear_mode |= GL11.GL_DEPTH_BUFFER_BIT;
     }
     
+    GL11.glClearColor(1, 1, 1, 1);
     GL11.glViewport(0, 0, w, h);
     
     camera.setProjection(MatrixStack.symmetricPerspective(w / 2f / 100f, h / 2f / 100f, 0, 1000));
