@@ -26,6 +26,26 @@ public class ShaderBuilder {
     _fsh._main.addLine("gl_FragColor = texture2D(texture, gl_TexCoord[0].st);");
   }
   
+  public ShaderBuilder recolour() {
+    _fsh.addVariable("uniform vec4", "in_recolour = vec4(1, 1, 1, 1)");
+    _fsh.addFunction("void", "recolour", fn -> {
+      fn.addLine("gl_FragColor = gl_FragColor * in_recolour;");
+    });
+    
+    return this;
+  }
+  
+  public ShaderBuilder desaturate() {
+    _fsh.addVariable("uniform float", "in_desat_percent = 0.5");
+    _fsh.addFunction("void", "desaturate", fn -> {
+      fn.addLine("vec3 lum = vec3(0.2125, 0.7154, 0.0721);")
+        .addLine("float prod = dot(lum, gl_FragColor.rgb);")
+        .addLine("gl_FragColor = mix(gl_FragColor, vec4(prod, prod, prod, gl_FragColor.a), in_desat_percent);");
+    });
+    
+    return this;
+  }
+  
   public Shader build() {
     String vsh = _vsh.build();
     String fsh = _fsh.build();
