@@ -9,18 +9,18 @@ public class ShaderStage {
   
   final ShaderFunction _main = new ShaderFunction("void", "main");
   
-  public ShaderStage() {
-    _functions.add(_main);
-  }
-  
   public ShaderStage addVariable(String type, String name) {
     _variables.add(new ShaderVariable(type, name));
     return this;
   }
   
-  public ShaderStage addFunction(String type, String name) {
+  public ShaderStage addFunction(String type, String name, ShaderFunctionCallback cb) {
     _main.addLine(name + "();");
-    _functions.add(new ShaderFunction(type, name));
+    
+    ShaderFunction fn = new ShaderFunction(type, name);
+    cb.run(fn);
+    
+    _functions.add(fn);
     return this;
   }
   
@@ -34,6 +34,8 @@ public class ShaderStage {
     for(ShaderFunction f : _functions) {
       s.append(f.build()).append('\n');
     }
+    
+    s.append(_main.build()).append('\n');
     
     return s.toString();
   }
@@ -79,5 +81,9 @@ public class ShaderStage {
       
       return s.toString();
     }
+  }
+  
+  public interface ShaderFunctionCallback {
+    public void run(ShaderFunction fn);
   }
 }
