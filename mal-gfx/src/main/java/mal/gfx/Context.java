@@ -5,7 +5,6 @@ import mal.gfx.textures.TextureLoader;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GLContext;
-import org.lwjgl.util.vector.Vector3f;
 
 public class Context {
   private final GLContext _gl;
@@ -17,6 +16,8 @@ public class Context {
   public final MatrixStack   matrices = new MatrixStack();
   
   private int _clear_mode = GL11.GL_COLOR_BUFFER_BIT;
+  
+  private float _w, _h;
   
   public Context(GLContext gl, boolean alpha, boolean depth, int w, int h) {
     _gl = gl;
@@ -32,10 +33,23 @@ public class Context {
     }
     
     GL11.glClearColor(1, 1, 1, 1);
-    GL11.glViewport(0, 0, w, h);
     
-    camera.setProjection(MatrixStack.symmetricPerspective(w / 2f / 100f, h / 2f / 100f, 0, 1000));
-    camera.lookAt(new Vector3f(0, 0, 100), new Vector3f(0, 0, 0));
+    setViewport(0, 0, w, h);
+    setProjection(w, h);
+    
+    camera.reset();
+  }
+  
+  public float getW() { return _w; }
+  public float getH() { return _h; }
+  
+  public void setViewport(int x, int y, int w, int h) {
+    GL11.glViewport(x, y, w, h);
+  }
+  
+  public void setProjection(float w, float h) {
+    _w = w; _h = h;
+    camera.proj.set(Matrices.symmetricPerspective(w / 2f / 100f, h / 2f / 100f, 0, 1000));
   }
   
   public void clear() {

@@ -16,8 +16,8 @@ public class ShaderManager {
   }
   
   boolean setCurrent(Shader shader) {
-    shader.proj.set(_context.camera.projBuffer);
-    shader.view.set(_context.camera.viewBuffer);
+    shader.proj.set(_context.camera.proj.getBuffer());
+    shader.view.set(_context.camera.view.getBuffer());
     
     if(_current != shader) {
       _current = shader;

@@ -56,7 +56,7 @@ public abstract class TexturedDrawable {
       _matrices.translate(pos);
       
       _shader.use();
-      _shader.model.set(_matrices.getWorldBuffer());
+      _shader.model.set(_matrices.getBuffer());
       
       for(UniformBinding<?> binding : _bindings) {
         binding.update();
