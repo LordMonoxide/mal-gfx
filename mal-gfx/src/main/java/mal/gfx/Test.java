@@ -24,9 +24,9 @@ public class Test {
         .withDepth()
         .build();
       
-      Texture t = _context.textures.getTexture("mal.png");
+      Texture t = _context.textures.getTexture("cat.png");
       
-      _shader = _context.shaders.create().build();
+      _shader = _context.shaders.create().blur().build();
       
       _drawable = new TexturedDrawableVBO(
         new float[] {
@@ -41,6 +41,9 @@ public class Test {
       );
       
       _drawable.pos.translate(-200, 0, 0);
+      
+      _shader.use();
+      _shader.getUniform("in_tex_size").set(t.size);
     }).onClose(() -> {
       _window.destroy();
     }).onLoop(() -> {

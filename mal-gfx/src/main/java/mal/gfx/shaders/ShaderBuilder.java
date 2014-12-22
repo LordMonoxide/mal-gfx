@@ -46,6 +46,25 @@ public class ShaderBuilder {
     return this;
   }
   
+  public ShaderBuilder blur() {
+    _fsh.addVariable("uniform vec2", "in_tex_size")
+        .addVariable("uniform float", "offset[3] = float[] (0.0, 1.3846153846, 3.2307692308)")
+        .addVariable("uniform float", "weight[3] = float[] (0.2270270270, 0.3162162162 / 2.0, 0.0702702703 / 2.0)");
+    
+    _fsh.addFunction("void", "blur", fn -> {
+      fn.addLine("gl_FragColor = texture2D(texture, gl_TexCoord[0].st) * weight[0];")
+        .addLine("for(int i = 1; i < 3; i++) {")
+          .addLine("vec2 o = vec2(offset[i] / in_tex_size.x, offset[i] / in_tex_size.y);")
+          .addLine("gl_FragColor += texture2D(texture, gl_TexCoord[0].st + vec2(0.0, o.y)) * weight[i];")
+          .addLine("gl_FragColor += texture2D(texture, gl_TexCoord[0].st - vec2(0.0, o.y)) * weight[i];")
+          .addLine("gl_FragColor += texture2D(texture, gl_TexCoord[0].st + vec2(o.x, 0.0)) * weight[i];")
+          .addLine("gl_FragColor += texture2D(texture, gl_TexCoord[0].st - vec2(o.x, 0.0)) * weight[i];")
+        .addLine("}");
+    });
+    
+    return this;
+  }
+  
   public Shader build() {
     String vsh = _vsh.build();
     String fsh = _fsh.build();
