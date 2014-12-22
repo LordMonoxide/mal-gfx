@@ -41,9 +41,7 @@ public class Test {
       );
       
       _drawable.pos.translate(-200, 0, 0);
-      
-      _shader.use();
-      _shader.getUniform("in_tex_size").set(t.size);
+      _drawable.addUniformBinding(_shader.getUniform("in_tex_size"), t.size);
     }).onClose(() -> {
       _window.destroy();
     }).onLoop(() -> {

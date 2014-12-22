@@ -84,29 +84,21 @@ public class TexturedDrawableVBO extends TexturedDrawable {
     _va.destroy();
   }
   
-  @Override public void draw() {
-    _matrices.push(() -> {
-      _matrices.translate(pos);
+  @Override protected void drawImpl() {
+    _va.bind(() -> {
+      GL20.glEnableVertexAttribArray(0);
+      GL20.glEnableVertexAttribArray(1);
       
-      _shader.model.set(_matrices.getWorldBuffer());
-      _shader.use();
-      _texture.use();
+      if(_indices != 0) {
+        _ib.bind(() -> {
+          GL11.glDrawElements(GL11.GL_TRIANGLES, _indices, GL11.GL_UNSIGNED_BYTE, 0);
+        });
+      } else {
+        GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, _vertices);
+      }
       
-      _va.bind(() -> {
-        GL20.glEnableVertexAttribArray(0);
-        GL20.glEnableVertexAttribArray(1);
-        
-        if(_indices != 0) {
-          _ib.bind(() -> {
-            GL11.glDrawElements(GL11.GL_TRIANGLES, _indices, GL11.GL_UNSIGNED_BYTE, 0);
-          });
-        } else {
-          GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, _vertices);
-        }
-        
-        GL20.glDisableVertexAttribArray(1);
-        GL20.glDisableVertexAttribArray(0);
-      });
+      GL20.glDisableVertexAttribArray(1);
+      GL20.glDisableVertexAttribArray(0);
     });
   }
 }
