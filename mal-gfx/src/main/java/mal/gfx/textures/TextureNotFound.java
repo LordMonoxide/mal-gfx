@@ -1,6 +1,6 @@
 package mal.gfx.textures;
 
-public class TextureNotFound implements Texture {
+public class TextureNotFound extends Texture {
   @Override public void use() {
     
   }
