@@ -48,10 +48,6 @@ public class MatrixStack {
     mat.m22 = -(f + n) / (f - n);
     mat.m32 = -2 * f * n / (f - n);
     mat.m23 = -1;
-    System.out.println(mat.m00);
-    System.out.println(mat.m11);
-    System.out.println(mat.m22);
-    System.out.println(mat.m32);
     return mat;
   }
   
@@ -64,10 +60,6 @@ public class MatrixStack {
     mat.m22 = -(f + n) / (f - n);
     mat.m23 = -1;
     mat.m32 = -(2 * f * n) / (f - n);
-    System.out.println(mat.m00);
-    System.out.println(mat.m11);
-    System.out.println(mat.m22);
-    System.out.println(mat.m32);
     return mat;
   }
   
