@@ -17,7 +17,7 @@ public class Context {
   
   private int _clear_mode = GL11.GL_COLOR_BUFFER_BIT;
   
-  private float _w, _h;
+  private int _w, _h;
   
   public Context(GLContext gl, boolean alpha, boolean depth, int w, int h) {
     _gl = gl;
@@ -40,15 +40,15 @@ public class Context {
     camera.reset();
   }
   
-  public float getW() { return _w; }
-  public float getH() { return _h; }
+  public int getW() { return _w; }
+  public int getH() { return _h; }
   
   public void setViewport(int x, int y, int w, int h) {
+    _w = w; _h = h;
     GL11.glViewport(x, y, w, h);
   }
   
   public void setProjection(float w, float h) {
-    _w = w; _h = h;
     camera.proj.set(Matrices.symmetricPerspective(w / 2f / 100f, h / 2f / 100f, 0, 1000));
   }
   

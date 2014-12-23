@@ -29,7 +29,7 @@ public class TexturedDrawableVBO extends TexturedDrawable {
         || caps.OpenGL21 && caps.GL_ARB_vertex_buffer_object;
   }
   
-  private VertexArray _va;
+  //private VertexArray _va;
   private Buffer _vb;
   private Buffer _ib;
   private int _vertices;
@@ -38,7 +38,7 @@ public class TexturedDrawableVBO extends TexturedDrawable {
   public TexturedDrawableVBO(float[] vertices, MatrixStack matrices, Texture texture, Shader shader) {
     super(vertices, matrices, texture, shader);
     
-    _va = VBO.createVertexArray();
+    //_va = VBO.createVertexArray();
     _vb = VBO.createVertexBuffer();
     _ib = VBO.createNoOpBuffer();
     
@@ -49,7 +49,7 @@ public class TexturedDrawableVBO extends TexturedDrawable {
   public TexturedDrawableVBO(float[] vertices, byte[] indices, MatrixStack matrices, Texture texture, Shader shader) {
     super(vertices, indices, matrices, texture, shader);
     
-    _va = VBO.createVertexArray();
+    //_va = VBO.createVertexArray();
     _vb = VBO.createVertexBuffer();
     _ib = VBO.createIndexBuffer();
     
@@ -61,13 +61,13 @@ public class TexturedDrawableVBO extends TexturedDrawable {
   private void updateVBO(FloatBuffer vertices, ByteBuffer indices) {
     _vertices = vertices.remaining();
     
-    _va.bind(() -> {
+    //_va.bind(() -> {
       _vb.bind(() -> {
         GL15.glBufferData(GL15.GL_ARRAY_BUFFER, vertices, GL15.GL_STATIC_DRAW);
         GL20.glVertexAttribPointer(0, 3, GL11.GL_FLOAT, false, 20, 0);
         GL20.glVertexAttribPointer(1, 2, GL11.GL_FLOAT, false, 20, 12);
       });
-    });
+    //});
     
     if(indices != null) {
       _indices = indices.remaining();
@@ -81,11 +81,11 @@ public class TexturedDrawableVBO extends TexturedDrawable {
   @Override public void destroy() {
     _vb.destroy();
     _ib.destroy();
-    _va.destroy();
+    //_va.destroy();
   }
   
   @Override protected void drawImpl() {
-    _va.bind(() -> {
+    //_va.bind(() -> {
       GL20.glEnableVertexAttribArray(0);
       GL20.glEnableVertexAttribArray(1);
       
@@ -99,6 +99,6 @@ public class TexturedDrawableVBO extends TexturedDrawable {
       
       GL20.glDisableVertexAttribArray(1);
       GL20.glDisableVertexAttribArray(0);
-    });
+    //});
   }
 }

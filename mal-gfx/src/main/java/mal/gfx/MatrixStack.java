@@ -13,10 +13,10 @@ public class MatrixStack {
   private Matrix4f _top;
   
   private final FloatBuffer _buffer = BufferUtils.createFloatBuffer(16);
-  private boolean _updated = true;
+  private boolean _updated;
   
   public MatrixStack() {
-    _top = Matrices.identity();
+    set(Matrices.identity());
   }
   
   public FloatBuffer getBuffer() {
@@ -29,13 +29,17 @@ public class MatrixStack {
     return _buffer;
   }
   
+  public Matrix4f top() {
+    return _top;
+  }
+  
   public void push() {
     _stack.push(_top);
     _top = new Matrix4f(_top);
   }
   
   public void pop() {
-    _top = _stack.pop();
+    set(_stack.pop());
   }
   
   public void push(Runnable r) {

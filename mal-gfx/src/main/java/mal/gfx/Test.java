@@ -1,6 +1,7 @@
 package mal.gfx;
 
 import mal.gfx.shaders.Shader;
+import mal.gfx.textures.EXTRenderTarget;
 import mal.gfx.textures.GL30RenderTarget;
 import mal.gfx.textures.RenderTarget;
 import mal.gfx.textures.Texture;
@@ -47,7 +48,7 @@ public class Test {
       
       _drawable.pos.translate(-200, 0, 0);
       
-      _target = new GL30RenderTarget(_context, 512, 512);
+      _target = new EXTRenderTarget(_context, 512, 512);
     }).onClose(() -> {
       _window.destroy();
     }).onLoop(() -> {
