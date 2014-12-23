@@ -1,9 +1,6 @@
 package mal.gfx;
 
 import mal.gfx.shaders.Shader;
-import mal.gfx.textures.EXTRenderTarget;
-import mal.gfx.textures.GL30RenderTarget;
-import mal.gfx.textures.RenderTarget;
 import mal.gfx.textures.Texture;
 import mal.gfx.vbo.TexturedDrawableVBO;
 
@@ -16,11 +13,8 @@ public class Test {
   private Context _context;
   private TexturedDrawable _drawable;
   private Shader _shader;
-  private RenderTarget _target;
   
   public Test() {
-    boolean update = true;
-    
     _window = new WindowBuilder().title("Malachite").build();
     
     _window.events.onCreate(() -> {
@@ -45,20 +39,9 @@ public class Test {
           2, 3, 0
         }, _context.matrices, t, _shader
       );
-      
-      _drawable.pos.translate(-200, 0, 0);
-      
-      _target = new EXTRenderTarget(_context, 512, 512);
     }).onClose(() -> {
       _window.destroy();
     }).onLoop(() -> {
-      if(update) {
-        _target.bind(() -> {
-        //  _target.clear();
-        //  _drawable.draw();
-        });
-      }
-      
       _context.clear();
       _drawable.draw();
     });
