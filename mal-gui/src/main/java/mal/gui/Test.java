@@ -1,5 +1,10 @@
-package mal.gfx;
+package mal.gui;
 
+import mal.gfx.Context;
+import mal.gfx.ContextBuilder;
+import mal.gfx.TexturedDrawable;
+import mal.gfx.Window;
+import mal.gfx.WindowBuilder;
 import mal.gfx.shaders.Shader;
 import mal.gfx.textures.Texture;
 import mal.gfx.vbo.TexturedDrawableVBO;

@@ -13,7 +13,7 @@ import de.matthiasmann.twl.utils.PNGDecoder;
 
 public class TextureLoader {
   //TODO: settings
-  private static final String TEXTURES_DIR = "gfx/textures/"; //$NON-NLS-1$
+  private static final String TEXTURES_DIR = "../gfx/textures/"; //$NON-NLS-1$
   
   private final Map<String, Texture> _textures = new ConcurrentHashMap<>();
   
