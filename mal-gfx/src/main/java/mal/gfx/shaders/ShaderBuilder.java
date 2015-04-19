@@ -23,13 +23,13 @@ public class ShaderBuilder {
       .addLine("gl_Position = in_proj * in_view * in_model * gl_Vertex;");
     
     _fsh.addVariable("uniform sampler2D", "texture");
-    _fsh._main.addLine("gl_FragColor = texture2D(texture, gl_TexCoord[0].st);");
+    _fsh._main.addLine("gl_FragData[0] = texture2D(texture, gl_TexCoord[0].st);");
   }
   
   public ShaderBuilder recolour() {
     _fsh.addVariable("uniform vec4", "in_recolour = vec4(1, 1, 1, 1)");
     _fsh.addFunction("void", "recolour", fn -> {
-      fn.addLine("gl_FragColor = gl_FragColor * in_recolour;");
+      fn.addLine("gl_FragData[0] = gl_FragData[0] * in_recolour;");
     });
     
     return this;
@@ -39,8 +39,8 @@ public class ShaderBuilder {
     _fsh.addVariable("uniform float", "in_desat_percent = 0.5");
     _fsh.addFunction("void", "desaturate", fn -> {
       fn.addLine("vec3 lum = vec3(0.2125, 0.7154, 0.0721);")
-        .addLine("float prod = dot(lum, gl_FragColor.rgb);")
-        .addLine("gl_FragColor = mix(gl_FragColor, vec4(prod, prod, prod, gl_FragColor.a), in_desat_percent);");
+        .addLine("float prod = dot(lum, gl_FragData[0].rgb);")
+        .addLine("gl_FragData[0] = mix(gl_FragData[0], vec4(prod, prod, prod, gl_FragData[0].a), in_desat_percent);");
     });
     
     return this;
@@ -52,13 +52,13 @@ public class ShaderBuilder {
         .addVariable("uniform float", "weight[3] = float[] (0.2270270270, 0.3162162162 / 2.0, 0.0702702703 / 2.0)");
     
     _fsh.addFunction("void", "blur", fn -> {
-      fn.addLine("gl_FragColor = texture2D(texture, gl_TexCoord[0].st) * weight[0];")
+      fn.addLine("gl_FragData[0] = texture2D(texture, gl_TexCoord[0].st) * weight[0];")
         .addLine("for(int i = 1; i < 3; i++) {")
           .addLine("vec2 o = vec2(offset[i] / in_tex_size.x, offset[i] / in_tex_size.y);")
-          .addLine("gl_FragColor += texture2D(texture, gl_TexCoord[0].st + vec2(0.0, o.y)) * weight[i];")
-          .addLine("gl_FragColor += texture2D(texture, gl_TexCoord[0].st - vec2(0.0, o.y)) * weight[i];")
-          .addLine("gl_FragColor += texture2D(texture, gl_TexCoord[0].st + vec2(o.x, 0.0)) * weight[i];")
-          .addLine("gl_FragColor += texture2D(texture, gl_TexCoord[0].st - vec2(o.x, 0.0)) * weight[i];")
+          .addLine("gl_FragData[0] += texture2D(texture, gl_TexCoord[0].st + vec2(0.0, o.y)) * weight[i];")
+          .addLine("gl_FragData[0] += texture2D(texture, gl_TexCoord[0].st - vec2(0.0, o.y)) * weight[i];")
+          .addLine("gl_FragData[0] += texture2D(texture, gl_TexCoord[0].st + vec2(o.x, 0.0)) * weight[i];")
+          .addLine("gl_FragData[0] += texture2D(texture, gl_TexCoord[0].st - vec2(o.x, 0.0)) * weight[i];")
         .addLine("}");
     });
     
